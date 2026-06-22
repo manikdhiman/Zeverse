@@ -1,0 +1,148 @@
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  width: 100%;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.2rem;
+  color: var(--primary-color);
+}
+
+.titleDivider {
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+  margin: 8px auto 40px;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+/* Intro Section */
+.introSection {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.introText h3 {
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-bottom: 16px;
+}
+
+.introText p {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.introImageWrapper {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+.introImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+}
+
+.introImageWrapper:hover .introImage {
+  transform: scale(1.03);
+}
+
+/* Process Section */
+.processSection h3 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin-bottom: 40px;
+}
+
+.processGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.processCard {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+.processCard:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow);
+}
+
+.stepNum {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  opacity: 0.8;
+  line-height: 1;
+}
+
+.processCard h4 {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.processCard p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* CTA Section */
+.ctaSection {
+  text-align: center;
+  background: linear-gradient(135deg, #002213 0%, #004225 100%);
+  color: var(--bg-pure);
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.ctaSection h3 {
+  font-size: 1.8rem;
+}
+
+.ctaSection p {
+  font-size: 1.05rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  .introSection {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .processGrid {
+    grid-template-columns: 1fr;
+  }
+}

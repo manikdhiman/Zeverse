@@ -1,0 +1,170 @@
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  width: 100%;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.2rem;
+  color: var(--primary-color);
+}
+
+.titleDivider {
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+  margin: 8px auto 40px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+/* Form Panel */
+.formPanel {
+  background-color: var(--bg-pure);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form h3 {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: -12px;
+  margin-bottom: 8px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.error {
+  color: #c0392b;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* Info Panel */
+.infoPanel {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.infoPanel h3 {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.infoItem {
+  display: flex;
+  gap: 16px;
+}
+
+.icon {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  background-color: var(--bg-pure);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.infoItem div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoItem strong {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.infoItem p {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.infoItem span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Success Card */
+.successCard {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  padding: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.successIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: var(--bg-pure);
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successCard h3 {
+  color: var(--primary-color);
+  font-size: 1.4rem;
+}
+
+.successCard p {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}

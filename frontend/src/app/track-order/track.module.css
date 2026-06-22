@@ -1,0 +1,251 @@
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  width: 100%;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.2rem;
+  color: var(--primary-color);
+}
+
+.titleDivider {
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+  margin: 8px auto 40px;
+}
+
+.instruction {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form {
+  max-width: 500px;
+  margin: 0 auto 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inputWrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.inputWrapper input {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.inputWrapper button {
+  padding: 12px 24px;
+}
+
+.error {
+  color: #c0392b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Dashboard */
+.dashboard {
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  padding: 32px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.summaryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid var(--primary-color);
+  padding-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.summaryHeader h3 {
+  font-size: 1.6rem;
+  color: var(--primary-color);
+}
+
+.summaryHeader p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.statusBox {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.statusBadge {
+  background-color: var(--accent-light);
+  color: var(--primary-color);
+  padding: 4px 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  border: 1px solid rgba(0, 66, 37, 0.15);
+}
+
+/* Visual Progress Tracker */
+.trackerVisual {
+  display: flex;
+  justify-content: space-between;
+  margin: 40px 0;
+  position: relative;
+}
+
+.trackerVisual::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: var(--border-color);
+  z-index: 1;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+  position: relative;
+  flex: 1;
+}
+
+.stepCircle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: var(--bg-light);
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  transition: var(--transition-smooth);
+}
+
+.step span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.completed .stepCircle {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--bg-pure);
+}
+
+.completed span {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Details Layout */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.recapCard {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.recapCard h4 {
+  font-size: 1.15rem;
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.recapCard p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-dark);
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.itemImage {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-pure);
+}
+
+.itemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.itemInfo h5 {
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.itemInfo span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+  margin-top: auto;
+}
+
+.totalRow strong {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .detailsGrid {
+    grid-template-columns: 1fr;
+  }
+}

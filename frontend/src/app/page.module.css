@@ -1,0 +1,331 @@
+.main {
+  width: 100%;
+}
+
+/* 1. Hero Section */
+.hero {
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  /* Luxurious deep forest green gradient background */
+  background: linear-gradient(135deg, #002213 0%, #004225 100%);
+  color: var(--bg-light);
+  padding: 0 24px;
+  overflow: hidden;
+}
+
+/* Luxury abstract design circle behind text */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, rgba(0, 66, 37, 0) 70%);
+  pointer-events: none;
+}
+
+.heroContent {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  width: 100%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: slideInUp 1s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.heroSubtitle {
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: var(--accent-color);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  font-size: 3.8rem;
+  line-height: 1.15;
+  color: var(--bg-pure);
+}
+
+.heroText {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  opacity: 0.85;
+}
+
+.heroActions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* 2. Section Headers */
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionHeader h2 {
+  font-size: 2.2rem;
+  color: var(--primary-color);
+}
+
+.sectionHeader p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.titleDivider {
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+  margin-top: 8px;
+}
+
+/* Categories Section */
+.categories {
+  padding: 80px 24px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.circleImage {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--border-color);
+  transition: var(--transition-smooth);
+}
+
+.circleImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition-smooth);
+}
+
+.categoryCard h4 {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: var(--transition-fast);
+}
+
+.categoryCard:hover .circleImage {
+  border-color: var(--primary-color);
+  box-shadow: 0 8px 20px rgba(0, 66, 37, 0.1);
+  transform: scale(1.05);
+}
+
+.categoryCard:hover .circleImage img {
+  transform: scale(1.08);
+}
+
+.categoryCard:hover h4 {
+  color: var(--primary-color);
+}
+
+/* 3. Bestsellers Section */
+.bestsellers {
+  background-color: var(--bg-light);
+  padding: 80px 24px;
+}
+
+.bestsellers .sectionHeader {
+  max-width: var(--max-width);
+  margin: 0 auto 48px;
+}
+
+.productGrid {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.viewAllRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.loader {
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  padding: 40px;
+}
+
+/* 4. USPS Section */
+.usps {
+  padding: 80px 24px;
+  background-color: var(--bg-pure);
+}
+
+.uspContainer {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.uspCard {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  transition: var(--transition-smooth);
+}
+
+.uspCard:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow);
+}
+
+.uspIcon {
+  font-size: 2.2rem;
+  margin-bottom: 4px;
+}
+
+.uspCard h3 {
+  font-size: 1.35rem;
+  color: var(--primary-color);
+}
+
+.uspCard p {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* 5. Testimonials Section */
+.testimonials {
+  padding: 80px 24px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.testimonial {
+  background-color: var(--bg-pure);
+  border: 1px solid var(--border-color);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.stars {
+  color: var(--accent-color);
+  font-size: 1rem;
+}
+
+.quote {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--text-dark);
+}
+
+.author {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  margin-top: auto;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 992px) {
+  .heroTitle {
+    font-size: 3rem;
+  }
+  
+  .categoryGrid {
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+  }
+  
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .uspContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .testimonialsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero {
+    height: 70vh;
+  }
+  .heroTitle {
+    font-size: 2.2rem;
+  }
+  .categoryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .circleImage {
+    width: 100px;
+    height: 100px;
+  }
+  .productGrid {
+    grid-template-columns: 1fr;
+  }
+  .uspContainer {
+    grid-template-columns: 1fr;
+  }
+}

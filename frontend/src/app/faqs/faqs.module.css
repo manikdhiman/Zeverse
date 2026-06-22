@@ -1,0 +1,106 @@
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  width: 100%;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.2rem;
+  color: var(--primary-color);
+}
+
+.titleDivider {
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+  margin: 8px auto 40px;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+}
+
+.faqCard {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.faqCardOpen {
+  border-bottom-color: var(--primary-color);
+}
+
+.faqHeader {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: left;
+  transition: var(--transition-fast);
+  gap: 16px;
+}
+
+.faqHeader:hover {
+  color: var(--primary-color);
+}
+
+.icon {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.faqContent {
+  padding-bottom: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.faqContent p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.helpCard {
+  text-align: center;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.helpCard h3 {
+  font-size: 1.4rem;
+  color: var(--primary-color);
+}
+
+.helpCard p {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 400px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
