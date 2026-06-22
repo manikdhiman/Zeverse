@@ -1,262 +1,154 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
+import { useCart } from '../../../src/context/CartContext';
 import Link from 'next/link';
-import { useCart } from '../../context/CartContext';
-import styles from './checkout.module.css';
 
 export default function CheckoutPage() {
-  const { cartItems, cartTotal, clearCart } = useCart();
+  const { cart, cartTotal, clearCart } = useCart();
   
-  // Shipping form states
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [generatedOrderNum, setGeneratedOrderNum] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
-  // Checkout progress states
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [orderResult, setOrderResult] = useState<any>(null);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [formData, setFormData] = useState({
+    firstName: '', lastName: '', email: '', phone: '',
+    address: '', city: '', postalCode: '', paymentMethod: 'cod'
+  });
 
-  const shippingCost = cartTotal >= 999 ? 0 : 99;
-  const finalTotal = cartTotal + shippingCost;
+  const shippingFee = cartTotal >= 999 ? 0 : 99;
+  const finalTotal = cartTotal + shippingFee;
 
-  const handleSubmitOrder = async (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const executeRealOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (cartItems.length === 0) return;
-    
-    setIsSubmitting(true);
-    setErrorMessage('');
+    setLoading(true);
+    setError(null);
 
+    // Build payload matching backend schemas requirements
     const orderPayload = {
-      customer_name: name,
-      email: email,
-      phone: phone,
-      address: address,
-      total_amount: finalTotal,
-      items: JSON.stringify(cartItems),
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      postal_code: formData.postalCode,
+      total_payable: finalTotal
     };
 
     try {
-      const response = await fetch('http://localhost:8000/api/orders', {
+      const response = await fetch('http://127.0.0.1:8000/api/orders', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderPayload),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderPayload)
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit order. Please try again.');
+        throw new Error('Failed to save order details to server.');
       }
 
       const data = await response.json();
-      setOrderResult(data);
-      clearCart(); // empty cart state
-    } catch (err: any) {
-      console.error(err);
-      
-      // Fallback checkout order creation in case backend isn't actively running
-      // This ensures the application is fully functional even during standalone testing
-      const fakeOrderNumber = `ZEV-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-      setOrderResult({
-        order_number: fakeOrderNumber,
-        customer_name: name,
-        email: email,
-        total_amount: finalTotal,
-        status: 'Pending',
-      });
+      setGeneratedOrderNum(data.order_number);
+      setIsSubmitted(true);
       clearCart();
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong while connecting to the server.');
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
-  // 1. ORDER SUCCESS SCREEN
-  if (orderResult) {
+  if (isSubmitted) {
     return (
-      <div className={styles.successContainer}>
-        <div className={styles.successCard}>
-          <div className={styles.successIcon}>✓</div>
-          <h2>Thank You for Your Order!</h2>
-          <p className={styles.subText}>Your order has been placed successfully.</p>
-          
-          <div className={styles.receiptBox}>
-            <div className={styles.receiptRow}>
-              <span>Order Number:</span>
-              <strong>{orderResult.order_number}</strong>
-            </div>
-            <div className={styles.receiptRow}>
-              <span>Customer Name:</span>
-              <span>{orderResult.customer_name}</span>
-            </div>
-            <div className={styles.receiptRow}>
-              <span>Confirmation Email:</span>
-              <span>{orderResult.email}</span>
-            </div>
-            <div className={styles.receiptRow}>
-              <span>Total Paid:</span>
-              <strong>₹{orderResult.total_amount.toFixed(2)}</strong>
-            </div>
-            <div className={styles.receiptRow}>
-              <span>Order Status:</span>
-              <span className={styles.statusBadge}>{orderResult.status || 'Pending'}</span>
-            </div>
-          </div>
-
-          <p className={styles.trackingNote}>
-            You can use your Order Number above at any time on our <strong>Track Order</strong> page to check on your delivery status.
-          </p>
-
-          <div className={styles.successActions}>
-            <Link href="/track-order" className="btn-primary">
-              Track Order
-            </Link>
-            <Link href="/shop" className="btn-secondary">
-              Continue Shopping
-            </Link>
-          </div>
+      <div className="success-card">
+        <span style={{ fontSize: '64px', display: 'block', marginBottom: '20px' }}>👑</span>
+        <h1 style={{ color: 'var(--primary-color)', marginBottom: '15px' }}>Thank You For Your Order!</h1>
+        <p style={{ fontSize: '16px', color: '#333', marginBottom: '20px' }}>
+          Your statement pieces are officially locked into our master database.
+        </p>
+        <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '4px', border: '1px solid var(--border-color)', marginBottom: '30px' }}>
+          <span style={{ fontSize: '13px', textTransform: 'uppercase', color: 'gray', display: 'block', marginBottom: '5px' }}>Your Order Tracking Number</span>
+          <strong style={{ fontSize: '22px', color: 'var(--primary-color)', letterSpacing: '1px' }}>{generatedOrderNum}</strong>
         </div>
+        <Link href="/shop" className="btn-primary" style={{ display: 'inline-block' }}>Continue Exploring Zeverse</Link>
       </div>
     );
   }
 
-  // 2. CHECKOUT FORM VIEW
+  if (cart.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '100px 20px' }}>
+        <h2 style={{ color: 'var(--primary-color)', marginBottom: '15px' }}>Your Bag is Empty</h2>
+        <Link href="/shop" className="btn-primary">Browse Catalog</Link>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>Checkout</h2>
-      <div className={styles.titleDivider}></div>
-
-      {cartItems.length === 0 ? (
-        <div className={styles.emptyPrompt}>
-          <p>You don't have any items to check out.</p>
-          <Link href="/shop" className="btn-primary" style={{ marginTop: '20px' }}>
-            Browse Collections
-          </Link>
-        </div>
-      ) : (
-        <div className={styles.layout}>
-          {/* Shipping Form */}
-          <form onSubmit={handleSubmitOrder} className={styles.formPanel}>
-            <h3>Shipping Details</h3>
-            
-            <div className={styles.formGroup}>
-              <label htmlFor="name">Full Name</label>
-              <input
-                id="name"
-                type="text"
-                required
-                className="input-field"
-                placeholder="e.g. Manik Dhiman"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+    <div style={{ maxWidth: '1100px', margin: '40px auto 0 auto', padding: '0 20px' }}>
+      <h1 style={{ color: 'var(--primary-color)', marginBottom: '30px', fontSize: '2.5rem' }}>Checkout</h1>
+      {error && <div style={{ color: '#C53030', backgroundColor: '#FFF5F5', padding: '15px', marginBottom: '20px', border: '1px solid #FFD3D3', borderRadius: '4px' }}>{error}</div>}
+      
+      <form onSubmit={executeRealOrder} className="checkout-layout">
+        <div className="checkout-form-section">
+          <h3 style={{ color: 'var(--primary-color)', fontSize: '20px', marginBottom: '20px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>Shipping Details</h3>
+          <div className="form-group-row">
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: '13px', color: 'gray' }}>First Name</label>
+              <input type="text" name="firstName" required value={formData.firstName} onChange={handleInputChange} className="form-input" />
             </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="email">Email Address</label>
-              <input
-                id="email"
-                type="email"
-                required
-                className="input-field"
-                placeholder="e.g. manik@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="phone">Phone Number</label>
-              <input
-                id="phone"
-                type="tel"
-                required
-                pattern="[0-9]{10}"
-                title="Please enter a valid 10-digit mobile number."
-                className="input-field"
-                placeholder="e.g. 9876543210"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="address">Delivery Address</label>
-              <textarea
-                id="address"
-                required
-                rows={4}
-                className="input-field"
-                placeholder="e.g. House No, Street name, City, State - Pincode"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                style={{ resize: 'vertical' }}
-              />
-            </div>
-
-            <div className={styles.paymentSection}>
-              <h3>Payment Method</h3>
-              <div className={styles.paymentSelector}>
-                <label className={styles.paymentLabel}>
-                  <input type="radio" name="payment" defaultChecked />
-                  <div className={styles.paymentDetails}>
-                    <strong>Cash on Delivery (COD) / Mock UPI</strong>
-                    <span>Pay online upon receipt or check mock transaction.</span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            {errorMessage && <p className={styles.errorMsg}>{errorMessage}</p>}
-
-            <button 
-              type="submit" 
-              className="btn-primary" 
-              style={{ width: '100%', padding: '16px', marginTop: '12px' }}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Processing Order...' : `Complete Order • ₹${finalTotal.toFixed(2)}`}
-            </button>
-          </form>
-
-          {/* Cart items summary */}
-          <div className={styles.summaryPanel}>
-            <h3>Items in Order</h3>
-            <div className={styles.itemsList}>
-              {cartItems.map((item) => (
-                <div key={item.id} className={styles.itemCard}>
-                  <img src={item.image} alt={item.name} className={styles.itemImage} />
-                  <div className={styles.itemInfo}>
-                    <h4>{item.name}</h4>
-                    <span>Qty: {item.quantity}</span>
-                  </div>
-                  <span className={styles.itemPrice}>₹{(item.price * item.quantity).toFixed(2)}</span>
-                </div>
-              ))}
-            </div>
-
-            <hr className={styles.divider} />
-
-            <div className={styles.costs}>
-              <div className={styles.costRow}>
-                <span>Items Subtotal</span>
-                <span>₹{cartTotal.toFixed(2)}</span>
-              </div>
-              <div className={styles.costRow}>
-                <span>Shipping Fee</span>
-                <span>{shippingCost === 0 ? 'FREE' : `₹${shippingCost.toFixed(2)}`}</span>
-              </div>
-              <hr className={styles.divider} />
-              <div className={styles.totalRow}>
-                <span>Total due</span>
-                <strong>₹{finalTotal.toFixed(2)}</strong>
-              </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: '13px', color: 'gray' }}>Last Name</label>
+              <input type="text" name="lastName" required value={formData.lastName} onChange={handleInputChange} className="form-input" />
             </div>
           </div>
+          <div className="form-group-row">
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: '13px', color: 'gray' }}>Email Address</label>
+              <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="form-input" />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: '13px', color: 'gray' }}>Phone Number</label>
+              <input type="tel" name="phone" required value={formData.phone} onChange={handleInputChange} className="form-input" />
+            </div>
+          </div>
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ fontSize: '13px', color: 'gray' }}>Street Address</label>
+            <input type="text" name="address" required value={formData.address} onChange={handleInputChange} className="form-input" />
+          </div>
+          <div className="form-group-row">
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: '13px', color: 'gray' }}>City</label>
+              <input type="text" name="city" required value={formData.city} onChange={handleInputChange} className="form-input" />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: '13px', color: 'gray' }}>Postal Code / PIN</label>
+              <input type="text" name="postalCode" required value={formData.postalCode} onChange={handleInputChange} className="form-input" />
+            </div>
+          </div>
+          <h3 style={{ color: 'var(--primary-color)', fontSize: '20px', marginTop: '40px', marginBottom: '20px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>Payment Method</h3>
+          <select name="paymentMethod" value={formData.paymentMethod} onChange={handleInputChange} className="form-input" style={{ height: '45px' }}>
+            <option value="cod">Cash on Delivery (COD)</option>
+          </select>
         </div>
-      )}
+
+        <div style={{ flex: 1, minWidth: '300px', background: 'var(--bg-light)', padding: '30px', borderRadius: '4px', border: '1px solid var(--border-color)', height: 'fit-content' }}>
+          <h3 style={{ color: 'var(--primary-color)', marginBottom: '20px' }}>Summary</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: '600', color: 'var(--primary-color)', marginBottom: '30px' }}>
+            <span>Total Payable</span>
+            <span>₹{finalTotal}</span>
+          </div>
+          <button type="submit" disabled={loading} className="btn-primary" style={{ width: '100%', padding: '15px' }}>
+            {loading ? 'Processing Order...' : 'Complete Order →'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

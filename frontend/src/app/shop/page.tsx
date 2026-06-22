@@ -1,59 +1,31 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import ProductCard from '../../components/ProductCard';
-import styles from './shop.module.css';
+import Link from 'next/link';
 
-// Separate component to handle search params, wrapped in Suspense
-const ShopCatalog: React.FC = () => {
+function ShopContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
-  // Get active filters from URL parameters
-  const urlCategory = searchParams.get('category') || 'All';
-  const urlCollection = searchParams.get('collection') || 'All';
-  const urlSearch = searchParams.get('search') || '';
-
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [categoryFilter, setCategoryFilter] = useState(urlCategory);
-  const [collectionFilter, setCollectionFilter] = useState(urlCollection);
-  const [priceFilter, setPriceFilter] = useState<number>(2000);
-  const [searchQuery, setSearchQuery] = useState(urlSearch);
-  const [sortBy, setSortBy] = useState('featured');
+  const [error, setError] = useState<string | null>(null);
 
-  // Keep state synced with URL changes (e.g. when navbar links are clicked)
-  useEffect(() => {
-    setCategoryFilter(urlCategory);
-    setCollectionFilter(urlCollection);
-    setSearchQuery(urlSearch);
-  }, [urlCategory, urlCollection, urlSearch]);
+  // Sync with URL categories smoothly
+  const urlCategory = searchParams.get('category') || 'all';
+  const [selectedCategory, setSelectedCategory] = useState(urlCategory);
+  const [maxPrice, setMaxPrice] = useState(3000);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch products based on filters
   useEffect(() => {
-    setLoading(true);
-    
-    // Construct request query
-    let queryParams = [];
-    if (categoryFilter && categoryFilter !== 'All') {
-      queryParams.push(`category=${encodeURIComponent(categoryFilter)}`);
-    }
-    if (collectionFilter && collectionFilter !== 'All') {
-      queryParams.push(`collection=${encodeURIComponent(collectionFilter)}`);
-    }
-    if (priceFilter) {
-      queryParams.push(`max_price=${priceFilter}`);
-    }
-    if (searchQuery) {
-      queryParams.push(`search=${encodeURIComponent(searchQuery)}`);
-    }
-    
-    const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
-    
-    fetch(`http://localhost:8000/api/products${queryString}`)
+    setSelectedCategory(urlCategory);
+  }, [urlCategory]);
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/api/products')
       .then((res) => {
-        if (!res.ok) throw new Error('API down');
+        if (!res.ok) throw new Error('Failed to fetch catalog.');
         return res.json();
       })
       .then((data) => {
@@ -61,188 +33,162 @@ const ShopCatalog: React.FC = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching filtered products, fallback used:', err);
-        // Fallback mock items in case Python backend is launching
-        const mockFallback = [
-          { id: 1, name: "Sunny Resin Daisy Drop Earrings", description: "Yellow resin daisy earrings.", price: 349.00, images: "https://images.unsplash.com/photo-1630019852942-f89202989a59?w=800&auto=format&fit=crop&q=80", category: "Earrings", collection: "Everyday Luxe", rating: 4.8, stock: 15 },
-          { id: 2, name: "Terracotta Heritage Jhumkas", description: "Hand-painted clay earrings.", price: 599.00, images: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&auto=format&fit=crop&q=80", category: "Earrings", collection: "Festive", rating: 4.6, stock: 8 },
-          { id: 3, name: "Vintage Golden Hoop Ear Cuffs", description: "Gold plated brass ear cuffs.", price: 299.00, images: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&auto=format&fit=crop&q=80", category: "Earrings", collection: "Everyday Luxe", rating: 4.5, stock: 25 },
-          { id: 4, name: "Chunky Clay Floral Choker", description: "Polymer clay flower choker.", price: 799.00, images: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&auto=format&fit=crop&q=80", category: "Neckpieces", collection: "Beach Vacation", rating: 4.9, stock: 5 },
-          { id: 5, name: "Heritage Emerald Bead Necklace", description: "Beaded luxury emerald style necklace.", price: 1299.00, images: "https://images.unsplash.com/photo-1611085583191-a3b1a30a5a40?w=800&auto=format&fit=crop&q=80", category: "Neckpieces", collection: "Wedding", rating: 4.7, stock: 10 },
-          { id: 6, name: "Abstract Ocean Blue Resin Ring", description: "Chunky resin ring with gold foil.", price: 399.00, images: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=800&auto=format&fit=crop&q=80", category: "Rings", collection: "Everyday Luxe", rating: 4.4, stock: 18 },
-          { id: 7, name: "Crescent Moon Brass Ring", description: "Hammered brass crescent ring.", price: 249.00, images: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&auto=format&fit=crop&q=80", category: "Rings", collection: "Everyday Luxe", rating: 4.5, stock: 30 },
-          { id: 8, name: "Hand-Carved Wooden Bangle Cuff", description: "Solid rosewood chunky bangle.", price: 499.00, images: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&auto=format&fit=crop&q=80", category: "Cuffs & Bracelets", collection: "Beach Vacation", rating: 4.3, stock: 12 },
-          { id: 9, name: "Whimsical Peacock Enamel Brooch", description: "Handpainted vintage peacock pin.", price: 449.00, images: "https://images.unsplash.com/photo-1598560917505-59a3ad559071?w=800&auto=format&fit=crop&q=80", category: "Brooches", collection: "Festive", rating: 4.7, stock: 14 }
-        ];
-
-        // Apply filters locally on fallback mock data
-        let filtered = mockFallback;
-        if (categoryFilter && categoryFilter !== 'All') {
-          filtered = filtered.filter(p => p.category.toLowerCase() === categoryFilter.toLowerCase());
-        }
-        if (collectionFilter && collectionFilter !== 'All') {
-          filtered = filtered.filter(p => p.collection && p.collection.toLowerCase() === collectionFilter.toLowerCase());
-        }
-        if (priceFilter) {
-          filtered = filtered.filter(p => p.price <= priceFilter);
-        }
-        if (searchQuery) {
-          filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.description.toLowerCase().includes(searchQuery.toLowerCase()));
-        }
-        setProducts(filtered);
+        setError(err.message);
         setLoading(false);
       });
-  }, [categoryFilter, collectionFilter, priceFilter, searchQuery]);
+  }, []);
 
-  // Handle local sorting
-  const getSortedProducts = () => {
-    let sorted = [...products];
-    if (sortBy === 'price-low') {
-      sorted.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-high') {
-      sorted.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'rating') {
-      sorted.sort((a, b) => b.rating - a.rating);
+  // Update URL without a hard page reload when someone updates the sidebar category
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    if (category === 'all') {
+      router.push('/shop');
+    } else {
+      router.push(`/shop?category=${category.toLowerCase()}`);
     }
-    return sorted;
   };
 
-  const handleClearFilters = () => {
-    setCategoryFilter('All');
-    setCollectionFilter('All');
-    setPriceFilter(2000);
-    setSearchQuery('');
-    router.push('/shop');
-  };
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory === 'all' || product.category.toLowerCase() === selectedCategory.toLowerCase();
+    const matchesPrice = product.price <= maxPrice;
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesPrice && matchesSearch;
+  });
 
-  const sortedProducts = getSortedProducts();
+  if (loading) return <div style={{ textAlign: 'center', padding: '100px 20px', color: '#0f3c2b', fontWeight: '600', letterSpacing: '1px' }}>LOADING COLLECTION VAULTS...</div>;
+  if (error) return <div style={{ textAlign: 'center', padding: '100px 20px', color: '#C53030' }}><h3>Backend Server Offline</h3><p>Make sure FastAPI is running on port 8000!</p></div>;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.shopLayout}>
-        {/* Left Sidebar Filter Section */}
-        <aside className={styles.sidebar}>
-          <div className={styles.filterSection}>
-            <div className={styles.sidebarHeader}>
-              <h3>Filters</h3>
-              <button onClick={handleClearFilters} className={styles.clearBtn}>Clear All</button>
-            </div>
+    <div style={{ maxWidth: '1340px', margin: '0 auto', padding: '40px 20px', fontFamily: 'sans-serif' }}>
+      
+      {/* Title Header matching the luxury aesthetic */}
+      <div style={{ marginBottom: '40px', borderBottom: '1px solid #eaeaea', paddingBottom: '20px' }}>
+        <span style={{ fontSize: '11px', letterSpacing: '2px', color: 'gray', textTransform: 'uppercase' }}>Zeverse Curated Catalog</span>
+        <h1 style={{ color: '#0f3c2b', fontSize: '2.4rem', margin: '5px 0 0 0', fontWeight: 'normal', textTransform: 'capitalize' }}>
+          {selectedCategory === 'all' ? 'Shop All Collections' : `${selectedCategory}`}
+        </h1>
+      </div>
+      
+      <div style={{ display: 'flex', gap: '50px', alignItems: 'flex-start' }}>
+        
+        {/* SIDEBAR FILTERS (Cleaned up, zero radio buttons) */}
+        <aside style={{ width: '240px', flexShrink: 0, position: 'sticky', top: '20px' }}>
+          
+          {/* Text Search Field */}
+          <div style={{ marginBottom: '35px' }}>
+            <h3 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '12px', color: '#0f3c2b', fontWeight: '600' }}>Search Design</h3>
+            <input 
+              type="text" 
+              placeholder="Type to search..." 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)} 
+              style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '0px', boxSizing: 'border-box', outline: 'none', fontSize: '14px' }}
+            />
           </div>
           
-          {/* Search Box inside sidebar */}
-          <div className={styles.filterSection}>
-            <h4>Search</h4>
-            <div className={styles.sidebarSearch}>
-              <input
-                type="text"
-                placeholder="Keyword..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+          {/* Interactive Navigation List */}
+          <div style={{ marginBottom: '35px' }}>
+            <h3 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px', color: '#0f3c2b', fontWeight: '600' }}>Categories</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {['all', 'earrings', 'neckpieces', 'rings', 'brooches'].map((cat) => {
+                const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => handleCategoryClick(cat)}
+                    style={{
+                      textAlign: 'left',
+                      background: 'none',
+                      border: 'none',
+                      padding: '10px 0',
+                      fontSize: '14px',
+                      textTransform: 'capitalize',
+                      cursor: 'pointer',
+                      color: isActive ? '#0f3c2b' : '#666',
+                      fontWeight: isActive ? '600' : 'normal',
+                      borderBottom: isActive ? '1px solid #0f3c2b' : '1px solid transparent',
+                      transition: 'all 0.2s ease',
+                      width: 'fit-content'
+                    }}
+                  >
+                    {cat === 'all' ? 'View All Items' : cat}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Category Filter */}
-          <div className={styles.filterSection}>
-            <h4>Product Categories</h4>
-            <div className={styles.filterOptions}>
-              {['All', 'Earrings', 'Neckpieces', 'Rings', 'Cuffs & Bracelets', 'Brooches'].map((cat) => (
-                <label key={cat} className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="category"
-                    checked={categoryFilter === cat}
-                    onChange={() => setCategoryFilter(cat)}
-                  />
-                  <span>{cat}</span>
-                </label>
-              ))}
+          {/* Pricing Controls Slider */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h3 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', color: '#0f3c2b', fontWeight: '600', margin: 0 }}>Max Price</h3>
+              <span style={{ fontSize: '14px', fontWeight: '600', color: '#0f3c2b' }}>₹{maxPrice}</span>
             </div>
-          </div>
-
-          {/* Collection Filter */}
-          <div className={styles.filterSection}>
-            <h4>Curated Collections</h4>
-            <div className={styles.filterOptions}>
-              {['All', 'Everyday Luxe', 'Festive', 'Wedding', 'Beach Vacation'].map((coll) => (
-                <label key={coll} className={styles.radioLabel}>
-                  <input
-                    type="radio"
-                    name="collection"
-                    checked={collectionFilter === coll}
-                    onChange={() => setCollectionFilter(coll)}
-                  />
-                  <span>{coll}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Price Range Filter */}
-          <div className={styles.filterSection}>
-            <h4>Max Price: <span className={styles.priceVal}>₹{priceFilter}</span></h4>
-            <input
-              type="range"
-              min="200"
-              max="2000"
-              step="50"
-              value={priceFilter}
-              onChange={(e) => setPriceFilter(Number(e.target.value))}
-              className={styles.priceSlider}
+            <input 
+              type="range" 
+              min="300" 
+              max="3000" 
+              step="50" 
+              value={maxPrice} 
+              onChange={(e) => setMaxPrice(Number(e.target.value))} 
+              style={{ width: '100%', accentColor: '#0f3c2b', cursor: 'pointer' }} 
             />
-            <div className={styles.sliderLabels}>
-              <span>₹200</span>
-              <span>₹2000</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'gray', marginTop: '5px' }}>
+              <span>₹300</span>
+              <span>₹3,000</span>
             </div>
           </div>
         </aside>
 
-        {/* Right Main Catalog Grid Section */}
-        <section className={styles.catalog}>
-          <div className={styles.catalogHeader}>
-            <div className={styles.resultCount}>
-              Showing <strong>{sortedProducts.length}</strong> jewelry pieces
-            </div>
-            
-            {/* Sorting controls */}
-            <div className={styles.sortWrapper}>
-              <span>Sort By:</span>
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={styles.sortSelect}>
-                <option value="featured">Featured Favorites</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Top Rated</option>
-              </select>
-            </div>
-          </div>
-
-          {loading ? (
-            <div className={styles.loader}>Polishing gems...</div>
-          ) : sortedProducts.length === 0 ? (
-            <div className={styles.noResults}>
-              <h3>No jewelry found matching your choices.</h3>
-              <p>Try clearing some filters or searching for another keyword.</p>
-              <button onClick={handleClearFilters} className="btn-primary" style={{ marginTop: '20px' }}>
-                Reset Filters
-              </button>
+        {/* PRODUCTS CATALOG DISPLAY GRID */}
+        <main style={{ flex: 1 }}>
+          {filteredProducts.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '80px 0', color: 'gray', fontSize: '15px' }}>
+              No statement pieces found matching your current filters.
             </div>
           ) : (
-            <div className={styles.grid}>
-              {sortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '40px 30px' }}>
+              {filteredProducts.map((product) => (
+                <div key={product.id} style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#fff' }}>
+                  
+                  {/* Image Frame */}
+                  <div style={{ width: '100%', height: '360px', overflow: 'hidden', backgroundColor: '#f9f9f9', marginBottom: '15px', position: 'relative' }}>
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
+                  </div>
+                  
+                  {/* Label Details */}
+                  <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                    <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'gray', letterSpacing: '1px', marginBottom: '4px' }}>{product.category}</span>
+                    <h4 style={{ margin: '0 0 6px 0', color: '#111', fontSize: '16px', fontWeight: '500', minHeight: '44px', lineHeight: '1.4' }}>{product.name}</h4>
+                    <p style={{ margin: '0 0 15px 0', fontWeight: '600', fontSize: '15px', color: '#111' }}>₹{product.price}</p>
+                    
+                    <Link 
+                      href={`/shop/${product.id}`} 
+                      style={{ display: 'block', textAlign: 'center', backgroundColor: '#0f3c2b', color: '#fff', textDecoration: 'none', padding: '12px', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '500', marginTop: 'auto' }}
+                    >
+                      Inspect Piece →
+                    </Link>
+                  </div>
+
+                </div>
               ))}
             </div>
           )}
-        </section>
+        </main>
+
       </div>
     </div>
   );
-};
+}
 
-export default function Shop() {
+export default function ShopPage() {
   return (
-    <Suspense fallback={<div style={{ padding: '80px', textAlignment: 'center', fontFamily: 'serif' }}>Loading Jewelry Catalog...</div>}>
-      <ShopCatalog />
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '100px' }}>Syncing collection grids...</div>}>
+      <ShopContent />
     </Suspense>
   );
 }

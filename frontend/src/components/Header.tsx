@@ -159,11 +159,11 @@ export const Header: React.FC = () => {
           
           <span className={styles.mobileSectionTitle}>Shop By Product</span>
           <Link href="/shop">- All Products</Link>
-          <Link href="/shop?category=Earrings">- Earrings</Link>
-          <Link href="/shop?category=Neckpieces">- Neckpieces</Link>
-          <Link href="/shop?category=Rings">- Rings</Link>
-          <Link href="/shop?category=Cuffs%20%26%20Bracelets">- Cuffs & Bracelets</Link>
-          <Link href="/shop?category=Brooches">- Brooches</Link>
+          <div className="dropdown-menu">
+          <Link href="/shop/earrings">Earrings</Link>
+          <Link href="/shop/neckpieces">Neckpieces</Link>
+          <Link href="/shop/rings">Rings</Link>
+          </div>
           <hr />
 
           <span className={styles.mobileSectionTitle}>Shop By Collection</span>

@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import { CartProvider } from "../context/CartContext";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
-import { CartDrawer } from "../components/CartDrawer";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: "Zeverse | Handcrafted Quirky & Premium Jewelry",
-  description: "Discover Zeverse's unique collection of statement earrings, necklaces, rings, cuffs, and brooches. Handcrafted, anti-tarnish, and hypoallergenic designs to add a little extra charm to your look.",
-  keywords: "jewelry, earrings, rings, necklaces, cuffs, handmade jewelry, anti-tarnish, premium accessories",
-  openGraph: {
-    title: "Zeverse | Handcrafted Quirky & Premium Jewelry",
-    description: "Discover Zeverse's unique collection of statement earrings, necklaces, rings, cuffs, and brooches.",
-    url: "https://zeverse.com",
-    siteName: "Zeverse Jewelry",
-    locale: "en_IN",
-    type: "website",
-  }
+  title: "Zeverse | Premium Statement Jewelry",
+  description: "Handcrafted anti-tarnish luxury jewelry collections",
 };
 
 export default function RootLayout({
@@ -25,12 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <CartProvider>
           <Header />
-          <CartDrawer />
-          <main style={{ minHeight: "60vh", display: "flex", flexDirection: "column" }}>
+          <main style={{ minHeight: '80vh' }}>
             {children}
           </main>
           <Footer />

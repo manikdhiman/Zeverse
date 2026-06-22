@@ -1,260 +1,86 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useCart } from '../../../../src/context/CartContext'; // Correct depth path fix
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useCart } from '../../../context/CartContext';
-import ProductCard from '../../../components/ProductCard';
-import styles from './product-details.module.css';
 
-interface ProductDetailProps {
-  params: Promise<{ id: string }>;
-}
-
-export default function ProductDetail({ params }: ProductDetailProps) {
-  const resolvedParams = use(params);
-  const productId = parseInt(resolvedParams.id, 10);
+export default function ProductDetailPage() {
+  const params = useParams();
   const router = useRouter();
-  
   const { addToCart } = useCart();
-  const [product, setProduct] = useState<any>(null);
-  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState('');
   
-  // Accordion control states
-  const [descriptionOpen, setDescriptionOpen] = useState(true);
-  const [specsOpen, setSpecsOpen] = useState(false);
-  const [careOpen, setCareOpen] = useState(false);
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [purchaseQuantity, setPurchaseQuantity] = useState(1);
 
-  // Fetch product data
+  const productID = params.id;
+
   useEffect(() => {
-    setLoading(true);
-    fetch(`http://localhost:8000/api/products/${productId}`)
+    if (!productID) return;
+    fetch(`http://127.0.0.1:8000/api/products/${productID}`)
       .then((res) => {
-        if (!res.ok) throw new Error('Product not found');
+        if (!res.ok) throw new Error('Artisan piece profile missing.');
         return res.json();
       })
       .then((data) => {
         setProduct(data);
-        const images = data.images ? data.images.split(',') : [];
-        setActiveImage(images[0] || '');
-        
-        // Fetch related products (same category)
-        return fetch(`http://localhost:8000/api/products?category=${encodeURIComponent(data.category)}`);
-      })
-      .then((res) => res.json())
-      .then((relatedData) => {
-        // Exclude current product
-        const filtered = relatedData.filter((p: any) => p.id !== productId).slice(0, 4);
-        setRelatedProducts(filtered);
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching product details, using fallback:', err);
-        // Fallback mock items
-        const mockFallbackList = [
-          { id: 1, name: "Sunny Resin Daisy Drop Earrings", description: "Brighten up your day with these quirky handcrafted yellow resin daisy earrings. Lightweight, anti-tarnish, and perfect for adding 'a little extra' charm to your daily casual look.", price: 349.00, images: "https://images.unsplash.com/photo-1630019852942-f89202989a59?w=800&auto=format&fit=crop&q=80,https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=800&auto=format&fit=crop&q=80", category: "Earrings", collection: "Everyday Luxe", rating: 4.8, stock: 15, specifications: '{"Material": "Eco-friendly Resin", "Weight": "6g per pair", "Dimensions": "4.5 cm x 2.5 cm"}' },
-          { id: 2, name: "Terracotta Heritage Jhumkas", description: "Exquisite hand-painted terracotta jhumkas displaying traditional Indian patterns. Styled for wedding and festive wear.", price: 599.00, images: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&auto=format&fit=crop&q=80", category: "Earrings", collection: "Festive", rating: 4.6, stock: 8, specifications: '{"Material": "Natural Clay", "Weight": "12g per pair", "Dimensions": "5.5 cm"}' },
-          { id: 4, name: "Chunky Clay Floral Choker", description: "Make a bold statement with this hand-sculpted clay choker.", price: 799.00, images: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&auto=format&fit=crop&q=80", category: "Neckpieces", collection: "Beach Vacation", rating: 4.9, stock: 5, specifications: '{"Material": "Polymer Clay", "Weight": "45g", "Dimensions": "Adjustable"}' },
-          { id: 5, name: "Heritage Emerald Bead Necklace", description: "A magnificent multilayered green bead neckpiece.", price: 1299.00, images: "https://images.unsplash.com/photo-1611085583191-a3b1a30a5a40?w=800&auto=format&fit=crop&q=80", category: "Neckpieces", collection: "Wedding", rating: 4.7, stock: 10, specifications: '{"Material": "Beads, Alloy", "Weight": "85g"}' }
-        ];
-        
-        const found = mockFallbackList.find(p => p.id === productId) || mockFallbackList[0];
-        setProduct(found);
-        const images = found.images ? found.images.split(',') : [];
-        setActiveImage(images[0] || '');
-        setRelatedProducts(mockFallbackList.filter(p => p.id !== found.id).slice(0, 4));
+        setError(err.message);
         setLoading(false);
       });
-  }, [productId]);
+  }, [productID]);
 
-  const handleBuyNow = () => {
-    addToCart(product, quantity);
-    router.push('/checkout');
+  const handleAddClick = () => {
+    if (!product) return;
+    for (let i = 0; i < purchaseQuantity; i++) {
+      addToCart({ id: product.id, name: product.name, price: product.price, image: product.image });
+    }
+    router.push('/cart');
   };
 
-  if (loading) return <div className={styles.loader}>Polishing your jewelry...</div>;
-  if (!product) return <div className={styles.error}>Product not found.</div>;
-
-  const imageList = product.images ? product.images.split(',') : [];
-  
-  // Parse specifications
-  let parsedSpecs: Record<string, string> = {};
-  try {
-    if (product.specifications) {
-      parsedSpecs = JSON.parse(product.specifications);
-    }
-  } catch (e) {
-    console.error('Failed to parse specifications', e);
-  }
+  if (loading) return <div style={{ textAlign: 'center', padding: '100px 20px', fontWeight: '600' }}>Inspecting artisan engineering matrices...</div>;
+  if (error || !product) return <div style={{ textAlign: 'center', padding: '100px 20px' }}><h2>Piece Not Found</h2><Link href="/shop" className="btn-primary">Return to Catalog</Link></div>;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.productPanel}>
-        {/* Left Side: Images Gallery */}
-        <div className={styles.gallery}>
-          <div className={styles.mainImageWrapper}>
-            <img src={activeImage} alt={product.name} className={styles.mainImage} />
-          </div>
-          {imageList.length > 1 && (
-            <div className={styles.thumbnails}>
-              {imageList.map((imgUrl: string, idx: number) => (
-                <button 
-                  key={idx} 
-                  className={`${styles.thumbBtn} ${activeImage === imgUrl ? styles.activeThumb : ''}`}
-                  onClick={() => setActiveImage(imgUrl)}
-                >
-                  <img src={imgUrl} alt={`Thumbnail ${idx + 1}`} />
-                </button>
-              ))}
-            </div>
-          )}
+    <div>
+      <div style={{ maxWidth: '1100px', margin: '20px auto 0 auto', padding: '0 20px', fontSize: '13px', color: 'gray' }}>
+        <Link href="/">Home</Link> / <Link href="/shop">Shop All</Link> / <span style={{ color: 'var(--primary-color)' }}>{product.name}</span>
+      </div>
+      <div className="details-container">
+        <div className="details-gallery">
+          <img src={product.image} alt={product.name} style={{ width: '100%', maxHeight: '550px', objectFit: 'cover', borderRadius: '4px' }} />
         </div>
-
-        {/* Right Side: Product Buy Details */}
-        <div className={styles.details}>
-          <div className={styles.breadcrumbs}>
-            <Link href="/">Home</Link> &gt; <Link href="/shop">Shop</Link> &gt; <span>{product.name}</span>
-          </div>
-
-          <div className={styles.tags}>
-            <span className={styles.categoryTag}>{product.category}</span>
-            {product.collection && <span className={styles.collectionTag}>{product.collection}</span>}
-          </div>
-
-          <h2 className={styles.productName}>{product.name}</h2>
+        <div className="details-content">
+          <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'gray', letterSpacing: '2px' }}>Collection - {product.category}</span>
+          <h1 style={{ fontSize: '2.5rem', color: 'var(--primary-color)', margin: '10px 0' }}>{product.name}</h1>
+          <p style={{ fontSize: '22px', fontWeight: '500', marginBottom: '30px' }}>₹{product.price}</p>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', marginBottom: '25px' }} />
           
-          <div className={styles.ratingsRow}>
-            <span className={styles.stars}>★★★★★</span>
-            <span className={styles.ratingVal}>{product.rating} / 5.0 Rating</span>
-            <span className={styles.divider}>|</span>
-            <span className={styles.stockVal}>
-              {product.stock > 0 ? `In Stock (${product.stock} left)` : 'Out of Stock'}
-            </span>
-          </div>
-
-          <div className={styles.priceRow}>
-            <span className={styles.price}>₹{product.price.toFixed(2)}</span>
-            <span className={styles.taxNote}>Inclusive of all taxes</span>
-          </div>
-
-          <hr className={styles.sectionDivider} />
-
-          {/* Quantity selector and CTAs */}
-          {product.stock > 0 && (
-            <div className={styles.actionsPanel}>
-              <div className={styles.quantityWrapper}>
-                <span>Quantity</span>
-                <div className={styles.qtyControls}>
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
-                  <input 
-                    type="number" 
-                    value={quantity} 
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    min="1" 
-                  />
-                  <button onClick={() => setQuantity(quantity + 1)}>+</button>
-                </div>
-              </div>
-
-              <div className={styles.buttonGroup}>
-                <button className="btn-secondary" onClick={() => addToCart(product, quantity)}>
-                  Add to Bag
-                </button>
-                <button className="btn-primary" onClick={handleBuyNow}>
-                  Buy It Now
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Collapsible accordions for info */}
-          <div className={styles.accordions}>
-            {/* Description Accordion */}
-            <div className={styles.accordion}>
-              <button 
-                className={styles.accordionHeader} 
-                onClick={() => setDescriptionOpen(!descriptionOpen)}
-              >
-                <span>Product Description</span>
-                <span>{descriptionOpen ? '−' : '+'}</span>
-              </button>
-              {descriptionOpen && (
-                <div className={styles.accordionContent}>
-                  <p>{product.description}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Specifications Accordion */}
-            <div className={styles.accordion}>
-              <button 
-                className={styles.accordionHeader} 
-                onClick={() => setSpecsOpen(!specsOpen)}
-              >
-                <span>Materials & Sizing</span>
-                <span>{specsOpen ? '−' : '+'}</span>
-              </button>
-              {specsOpen && (
-                <div className={styles.accordionContent}>
-                  {Object.keys(parsedSpecs).length > 0 ? (
-                    <table className={styles.specsTable}>
-                      <tbody>
-                        {Object.entries(parsedSpecs).map(([key, val]) => (
-                          <tr key={key}>
-                            <td><strong>{key}</strong></td>
-                            <td>{val}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <p>Standard size, handcrafted with skin-friendly materials.</p>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Care Guide Accordion */}
-            <div className={styles.accordion}>
-              <button 
-                className={styles.accordionHeader} 
-                onClick={() => setCareOpen(!careOpen)}
-              >
-                <span>Care Instructions</span>
-                <span>{careOpen ? '−' : '+'}</span>
-              </button>
-              {careOpen && (
-                <div className={styles.accordionContent}>
-                  <ul className={styles.careList}>
-                    <li>Keep your jewelry dry and away from humidity or wet surfaces.</li>
-                    <li>Avoid direct contact with perfumes, spray mists, and sanitizers.</li>
-                    <li>Always store your pieces individually in a soft linen pouch or airtight container.</li>
-                    <li>Clean after use with a soft microfiber cloth to wipe away makeup or sweat.</li>
-                  </ul>
-                </div>
-              )}
+          <div style={{ marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: 'gray' }}>Quantity:</span>
+            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #CCC', borderRadius: '4px', backgroundColor: 'white' }}>
+              <button onClick={() => setPurchaseQuantity(prev => Math.max(1, prev - 1))} style={{ padding: '8px 16px', background: 'none', border: 'none', cursor: 'pointer' }}>-</button>
+              <span style={{ minWidth: '30px', textAlign: 'center' }}>{purchaseQuantity}</span>
+              <button onClick={() => setPurchaseQuantity(prev => prev + 1)} style={{ padding: '8px 16px', background: 'none', border: 'none', cursor: 'pointer' }}>+</button>
             </div>
           </div>
+
+          <button className="btn-primary" onClick={handleAddClick} style={{ width: '100%', padding: '16px', textTransform: 'uppercase', marginBottom: '40px' }}>Add to Bag & Review Cart →</button>
+
+          <h3 style={{ color: 'var(--primary-color)', fontSize: '18px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>Product Specifications</h3>
+          <table className="specs-table">
+            <tbody>
+              <tr><td>Composition</td><td>{product.material}</td></tr>
+              <tr><td>Dimensions</td><td>{product.size}</td></tr>
+              <tr><td>Care Rules</td><td>{product.care}</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
-
-      {/* Related Products Section */}
-      {relatedProducts.length > 0 && (
-        <section className={styles.relatedProducts}>
-          <div className={styles.sectionHeader}>
-            <h2>You May Also Like</h2>
-            <div className={styles.titleDivider}></div>
-          </div>
-          <div className={styles.relatedGrid}>
-            {relatedProducts.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }
