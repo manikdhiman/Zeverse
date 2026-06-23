@@ -1,121 +1,68 @@
-"use client";
-
+'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-  category: string;
-}
+const CartContext = createContext<any>(null);
 
-interface CartContextType {
-  cartItems: CartItem[];
-  addToCart: (product: any, quantity?: number) => void;
-  removeFromCart: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
-  clearCart: () => void;
-  cartTotal: number;
-  cartCount: number;
-  isCartOpen: boolean;
-  setIsCartOpen: (isOpen: boolean) => void;
-}
+export function CartProvider({ children }: { children: React.ReactNode }) {
+  const [cart, setCart] = useState<any[]>([]);
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
-  // Load cart from localStorage on mount
+  // Hydrate cart from localStorage on layout mount safely
   useEffect(() => {
-    const savedCart = localStorage.getItem('zeverse_cart');
-    if (savedCart) {
+    const storedCart = localStorage.getItem('zv_cart');
+    if (storedCart) {
       try {
-        setCartItems(JSON.parse(savedCart));
+        setCart(JSON.parse(storedCart));
       } catch (e) {
-        console.error('Failed to parse cart items', e);
+        console.error("Error parsing cart cache", e);
       }
     }
   }, []);
 
-  // Save cart to localStorage when it changes
-  const saveCart = (items: CartItem[]) => {
-    setCartItems(items);
-    localStorage.setItem('zeverse_cart', JSON.stringify(items));
+  // Sync to local memory storage whenever the bag mutations fire
+  const syncCartMemory = (updatedCart: any[]) => {
+    setCart(updatedCart);
+    localStorage.setItem('zv_cart', JSON.stringify(updatedCart));
   };
 
-  const addToCart = (product: any, quantity: number = 1) => {
-    const existingIndex = cartItems.findIndex((item) => item.id === product.id);
-    const firstImage = product.images ? product.images.split(',')[0] : '';
-    
+  const addToCart = (product: any) => {
+    const existingIndex = cart.findIndex((item) => item.id === product.id);
     if (existingIndex > -1) {
-      const newItems = [...cartItems];
-      newItems[existingIndex].quantity += quantity;
-      saveCart(newItems);
+      // If item already exists inside the bag, increment its numerical count cleanly
+      const newCart = [...cart];
+      newCart[existingIndex].quantity += 1;
+      syncCartMemory(newCart);
     } else {
-      const newItem: CartItem = {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: firstImage,
-        quantity: quantity,
-        category: product.category,
-      };
-      saveCart([...cartItems, newItem]);
+      // Append the brand new structured metadata layout cleanly
+      syncCartMemory([...cart, { ...product, quantity: 1 }]);
     }
-    // Open the cart drawer automatically to give instant visual feedback
-    setIsCartOpen(true);
   };
 
-  const removeFromCart = (productId: number) => {
-    const newItems = cartItems.filter((item) => item.id !== productId);
-    saveCart(newItems);
-  };
-
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(id);
       return;
     }
-    const newItems = cartItems.map((item) => 
-      item.id === productId ? { ...item, quantity } : item
-    );
-    saveCart(newItems);
+    const newCart = cart.map((item) => (item.id === id ? { ...item, quantity } : item));
+    syncCartMemory(newCart);
+  };
+
+  const removeFromCart = (id: string) => {
+    const newCart = cart.filter((item) => item.id !== id);
+    syncCartMemory(newCart);
   };
 
   const clearCart = () => {
-    saveCart([]);
+    syncCartMemory([]);
   };
 
-  const cartTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  // Derive total live payable metric numbers smoothly on every single render loop pass
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        cartTotal,
-        cartCount,
-        isCartOpen,
-        setIsCartOpen,
-      }}
-    >
+    <CartContext.Provider value={{ cart, addToCart, updateQuantity, removeFromCart, clearCart, cartTotal }}>
       {children}
     </CartContext.Provider>
   );
-};
+}
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-};
+export const useCart = () => useContext(CartContext);

@@ -42,34 +42,140 @@ function LoginContent() {
   };
 
   return (
-    <div style={{ maxWidth: '420px', margin: '100px auto', padding: '40px 30px', border: '1px solid #eee', backgroundColor: '#fff', fontFamily: 'sans-serif' }}>
-      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <span style={{ fontSize: '11px', letterSpacing: '2px', color: 'gray', textTransform: 'uppercase' }}>Secure Gateway</span>
-        <h2 style={{ color: '#0f3c2b', fontFamily: 'serif', fontSize: '2rem', margin: '5px 0' }}>Vault Identity</h2>
+    <div style={{ 
+      maxWidth: '900px', 
+      margin: '60px auto', 
+      display: 'grid', 
+      gridTemplateColumns: '1fr 1fr', 
+      backgroundColor: '#fff', 
+      boxShadow: '0 20px 40px rgba(0,0,0,0.04)', 
+      minHeight: '550px',
+      border: '1px solid #f2f2f2'
+    }}>
+      
+      {/* LEFT PANEL: Deep Emerald Velvet Luxury Mood Panel */}
+      <div style={{ 
+        backgroundColor: '#0f3c2b', 
+        padding: '50px', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'space-between',
+        color: '#fff',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Subtle decorative overlay hint */}
+        <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '300px', height: '300px', borderRadius: '50%', border: '1px solid rgba(219, 185, 104, 0.1)' }} />
+        
+        <div>
+          <span style={{ fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', color: '#dbb968', display: 'block', marginBottom: '15px', fontFamily: 'sans-serif' }}>
+            The Vault Identity
+          </span>
+          <h2 style={{ fontFamily: 'serif', fontSize: '2.5rem', fontWeight: 400, margin: 0, letterSpacing: '2px', lineHeight: '1.2' }}>
+            Elevate Your <br />Statement
+          </h2>
+        </div>
+
+        <div>
+          <p style={{ fontFamily: 'serif', fontSize: '14px', italic: 'true', color: '#dbb968', margin: '0 0 8px 0', letterSpacing: '1px' }}>
+            “Jewelry is not ordinary accessory; it is an extension of identity.”
+          </p>
+          <span style={{ fontFamily: 'sans-serif', fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>
+            — ZEVERSE EDITORIAL
+          </span>
+        </div>
       </div>
 
-      {error && <div style={{ color: '#C53030', backgroundColor: '#FFF5F5', padding: '12px', marginBottom: '20px', border: '1px solid #FFD3D3', fontSize: '14px' }}>{error}</div>}
+      {/* RIGHT PANEL: Crisp White Minimalist Form */}
+      <div style={{ padding: '60px 50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div style={{ marginBottom: '35px' }}>
+          <h3 style={{ fontFamily: 'serif', fontSize: '1.8rem', color: '#0f3c2b', margin: '0 0 6px 0', letterSpacing: '1px' }}>
+            Welcome Back
+          </h3>
+          <p style={{ fontFamily: 'sans-serif', fontSize: '12px', color: '#777', margin: 0, letterSpacing: '0.5px' }}>
+            Access your secure profile vault portfolio.
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
-          <label style={{ fontSize: '12px', color: 'gray', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px' }}>Email Profile</label>
-          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', boxSizing: 'border-box' }} />
-        </div>
-        <div>
-          <label style={{ fontSize: '12px', color: 'gray', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px' }}>Secure Pin / Password</label>
-          <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={{ width: '100%', padding: '12px', border: '1px solid #ddd', boxSizing: 'border-box' }} />
-        </div>
-        <button type="submit" disabled={loading} style={{ backgroundColor: '#0f3c2b', color: '#fff', border: 'none', padding: '15px', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '13px', cursor: 'pointer', marginTop: '10px' }}>
-          {loading ? 'Authenticating Matrix...' : 'Open Account Vault →'}
-        </button>
-      </form>
+        {error && (
+          <div style={{ 
+            color: '#C53030', 
+            backgroundColor: '#FFF5F5', 
+            padding: '12px 15px', 
+            marginBottom: '25px', 
+            borderLeft: '3px solid #E53E3E', 
+            fontSize: '12px',
+            fontFamily: 'sans-serif'
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div>
+            <label style={{ fontFamily: 'sans-serif', fontSize: '10px', color: '#111', textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>
+              Email Address
+            </label>
+            <input 
+              type="email" 
+              required 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              placeholder="name@luxury.com"
+              style={{ width: '100%', padding: '14px 0', border: 'none', borderBottom: '1px solid #ddd', boxSizing: 'border-box', outline: 'none', fontSize: '14px', transition: 'border-color 0.2s', fontFamily: 'sans-serif' }} 
+              onFocus={(e) => e.target.style.borderBottom = '1px solid #0f3c2b'}
+              onBlur={(e) => e.target.style.borderBottom = '1px solid #ddd'}
+            />
+          </div>
+
+          <div>
+            <label style={{ fontFamily: 'sans-serif', fontSize: '10px', color: '#111', textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>
+              Secure Password
+            </label>
+            <input 
+              type="password" 
+              required 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              placeholder="••••••••"
+              style={{ width: '100%', padding: '14px 0', border: 'none', borderBottom: '1px solid #ddd', boxSizing: 'border-box', outline: 'none', fontSize: '14px', transition: 'border-color 0.2s', fontFamily: 'sans-serif' }} 
+              onFocus={(e) => e.target.style.borderBottom = '1px solid #0f3c2b'}
+              onBlur={(e) => e.target.style.borderBottom = '1px solid #ddd'}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={loading} 
+            style={{ 
+              backgroundColor: '#0f3c2b', 
+              color: '#dbb968', 
+              border: 'none', 
+              padding: '16px', 
+              textTransform: 'uppercase', 
+              letterSpacing: '2px', 
+              fontSize: '11px', 
+              fontWeight: 600,
+              cursor: 'pointer', 
+              marginTop: '15px',
+              fontFamily: 'sans-serif',
+              transition: 'opacity 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+          >
+            {loading ? 'Verifying Credentials...' : 'Sign In To Account Vault'}
+          </button>
+        </form>
+      </div>
+
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div>Loading authorization profile...</div>}>
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '100px', fontFamily: 'serif', color: '#0f3c2b' }}>Loading luxury profile...</div>}>
       <LoginContent />
     </Suspense>
   );
