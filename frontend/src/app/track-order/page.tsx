@@ -4,87 +4,194 @@ import React, { useState } from 'react';
 
 export default function TrackOrderPage() {
   const [orderNumber, setOrderNumber] = useState('');
-  const [trackedData, setTrackedData] = useState<any>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [orderData, setOrderData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleTrackSubmit = async (e: React.FormEvent) => {
+  const handleTrackingSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    setHasSearched(true);
+    if (!orderNumber.trim()) return;
+
     setLoading(true);
+    setError(null);
+    setOrderData(null);
 
     try {
+      // Points to your local FastAPI tracking server port
       const response = await fetch(`http://127.0.0.1:8000/api/orders/track/${orderNumber.trim()}`);
+      
       if (!response.ok) {
-        throw new Error('Not found');
+        throw new Error('This tracking reference code does not match our vault registry.');
       }
+
       const data = await response.json();
-      setTrackedData(data);
-    } catch (err) {
-      setTrackedData(null);
+      setOrderData(data);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
+  // Defining the editorial steps for our progress timeline matrix
+  const trackingStages = [
+    { level: 1, title: 'Order Manifested', desc: 'Artisan selection confirmed & packaging initialized.' },
+    { level: 2, title: 'Quality Audited', desc: 'Passed anti-tarnish microscopic reflection inspection.' },
+    { level: 3, title: 'In Transit', desc: 'Handed over to luxury premium insured courier.' },
+    { level: 4, title: 'Delivered', desc: 'Statement pieces received at customer identity destination.' },
+  ];
+
+  const currentStage = orderData ? orderData.current_stage : 0;
+
   return (
-    <div style={{ padding: '0 20px' }}>
-      <div className="track-card">
-        <span style={{ color: 'var(--accent-color)', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '13px', fontWeight: '600' }}>Fulfillment Registry</span>
-        <h1 style={{ color: 'var(--primary-color)', fontSize: '2.5rem', marginTop: '5px' }}>Track Your Statement</h1>
-        
-        <form onSubmit={handleTrackSubmit} className="search-bar-row">
-          <input 
-            type="text"
-            placeholder="e.g., ZV-2026-58392"
-            value={orderNumber}
-            onChange={(e) => setOrderNumber(e.target.value)}
-            required
-            className="form-input"
-            style={{ margin: 0, height: '48px' }}
-          />
-          <button type="submit" className="btn-primary" style={{ padding: '0 30px', height: '48px' }}>Locate Bag</button>
-        </form>
-
-        {loading && <div style={{ color: 'var(--primary-color)', fontWeight: '600', textAlign: 'center' }}>Searching database vaults...</div>}
-
-        {hasSearched && !loading && (
-          <div>
-            {trackedData ? (
-              <div>
-                <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', marginBottom: '30px' }} />
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '30px', backgroundColor: 'var(--bg-light)', padding: '15px', borderRadius: '4px' }}>
-                  <div>
-                    <span style={{ color: 'gray', display: 'block', fontSize: '12px' }}>Order Identifier</span>
-                    <strong style={{ color: 'var(--primary-color)' }}>{trackedData.order_number}</strong>
-                  </div>
-                  <div>
-                    <span style={{ color: 'gray', display: 'block', fontSize: '12px' }}>Total Amount</span>
-                    <strong>₹{trackedData.total_payable}</strong>
-                  </div>
-                </div>
-
-                <div className="timeline-track">
-                  <div className={`timeline-step-node ${trackedData.current_stage >= 1 ? 'active' : ''}`}>
-                    <h4 style={{ fontSize: '16px', color: 'var(--primary-color)' }}>Order Confirmed & Payment Verified</h4>
-                    <p style={{ fontSize: '13px', color: 'gray' }}>Receipt logged permanently inside server memory structures.</p>
-                  </div>
-                  <div className={`timeline-step-node ${trackedData.current_stage >= 2 ? 'active' : ''}`}>
-                    <h4 style={{ fontSize: '16px', color: 'var(--primary-color)' }}>Handcrafted Curations Packaged</h4>
-                  </div>
-                  <div className={`timeline-step-node ${trackedData.current_stage >= 3 ? 'active' : ''}`}>
-                    <h4 style={{ fontSize: '16px', color: 'var(--primary-color)' }}>Handed over to Express Courier</h4>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '30px 10px', backgroundColor: '#FFF5F5', border: '1px solid #FFD3D3', borderRadius: '4px', color: '#C53030' }}>
-                <p style={{ fontWeight: '600' }}>Tracking Reference Code Not Recognized</p>
-              </div>
-            )}
-          </div>
-        )}
+    <div style={{ maxWidth: '850px', margin: '60px auto 100px auto', padding: '0 20px', fontFamily: 'sans-serif' }}>
+      
+      {/* Page Header Headers */}
+      <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+        <span style={{ fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', color: '#ab8e4e', fontWeight: 600, display: 'block', marginBottom: '10px' }}>
+          Logistics Portal
+        </span>
+        <h1 style={{ fontFamily: 'serif', color: '#0f3c2b', fontSize: '2.5rem', fontWeight: 400, margin: 0, letterSpacing: '1px' }}>
+          Track Your Statement Pieces
+        </h1>
+        <p style={{ color: '#777', fontSize: '13px', marginTop: '10px', letterSpacing: '0.5px' }}>
+          Enter your unique invoice reference token to track your curated parcel in real time.
+        </p>
       </div>
+
+      {/* Minimalist Search Input Bar */}
+      <form onSubmit={handleTrackingSearch} style={{ maxWidth: '550px', margin: '0 auto 50px auto', display: 'flex', gap: '15px' }}>
+        <input 
+          type="text"
+          required
+          value={orderNumber}
+          onChange={(e) => setOrderNumber(e.target.value)}
+          placeholder="e.g., ZV-2026-84921"
+          style={{ 
+            flex: 1, 
+            padding: '16px 20px', 
+            border: '1px solid #ddd', 
+            fontSize: '14px', 
+            outline: 'none', 
+            fontFamily: 'sans-serif',
+            letterSpacing: '1px',
+            transition: 'border-color 0.2s'
+          }}
+          onFocus={(e) => e.target.style.borderColor = '#0f3c2b'}
+          onBlur={(e) => e.target.style.borderColor = '#ddd'}
+        />
+        <button 
+          type="submit"
+          disabled={loading}
+          style={{ 
+            backgroundColor: '#0f3c2b', 
+            color: '#dbb968', 
+            border: 'none', 
+            padding: '0 30px', 
+            textTransform: 'uppercase', 
+            letterSpacing: '1px', 
+            fontSize: '11px', 
+            fontWeight: 600, 
+            cursor: 'pointer' 
+          }}
+        >
+          {loading ? 'Scanning...' : 'Locate Parcel'}
+        </button>
+      </form>
+
+      {/* Error Output Banner */}
+      {error && (
+        <div style={{ color: '#C53030', backgroundColor: '#FFF5F5', padding: '15px', borderRadius: '0', fontSize: '13px', borderLeft: '3px solid #E53E3E', textAlign: 'center', maxWidth: '550px', margin: '0 auto' }}>
+          ✦ {error}
+        </div>
+      )}
+
+      {/* LIVE TIMELINE TRACKING RESULTS CONTAINER */}
+      {orderData && (
+        <div style={{ backgroundColor: '#fff', border: '1px solid #f2f2f2', padding: '40px', boxShadow: '0 15px 35px rgba(0,0,0,0.02)' }}>
+          
+          {/* Metadata Grid Header Summary */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', borderBottom: '1px solid #eee', paddingBottom: '25px', marginBottom: '40px' }}>
+            <div>
+              <span style={{ fontSize: '10px', uppercase: 'true', color: '#999', display: 'block', letterSpacing: '1px' }}>TRACKING REFERENCE</span>
+              <strong style={{ fontSize: '16px', color: '#0f3c2b', fontFamily: 'serif' }}>{orderData.order_number}</strong>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <span style={{ fontSize: '10px', uppercase: 'true', color: '#999', display: 'block', letterSpacing: '1px' }}>ESTIMATED DESTINATION DEPLOYMENT</span>
+              <strong style={{ fontSize: '14px', color: '#111' }}>Premium Insured Carrier Route</strong>
+            </div>
+          </div>
+
+          {/* Stepper Timeline Graphics Map */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '35px', position: 'relative', paddingLeft: '40px' }}>
+            
+            {/* The structural background connection wire string path line */}
+            <div style={{ position: 'absolute', left: '11px', top: '10px', bottom: '10px', width: '2px', backgroundColor: '#eee', zIndex: 1 }} />
+            
+            {/* Active progress wire string overlay path line highlight */}
+            <div style={{ 
+              position: 'absolute', 
+              left: '11px', 
+              top: '10px', 
+              height: `${((currentStage - 1) / (trackingStages.length - 1)) * 100}%`, 
+              width: '2px', 
+              backgroundColor: '#0f3c2b', 
+              zIndex: 2,
+              transition: 'height 0.5s ease-in-out'
+            }} />
+
+            {trackingStages.map((stage) => {
+              const isPassed = currentStage >= stage.level;
+              const isCurrent = currentStage === stage.level;
+
+              return (
+                <div key={stage.level} style={{ display: 'flex', gap: '25px', alignItems: 'flex-start', position: 'relative', zIndex: 3 }}>
+                  
+                  {/* Circular Node Indicators */}
+                  <div style={{ 
+                    marginLeft: '-40px',
+                    width: '24px', 
+                    height: '24px', 
+                    borderRadius: '50%', 
+                    backgroundColor: isPassed ? '#0f3c2b' : '#fff', 
+                    border: isPassed ? 'none' : '2px solid #eee',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '11px',
+                    color: isPassed ? '#dbb968' : '#aaa',
+                    fontWeight: 'bold',
+                    boxShadow: isCurrent ? '0 0 0 5px rgba(15, 60, 43, 0.15)' : 'none',
+                    transition: 'all 0.3s'
+                  }}>
+                    {isPassed ? '✓' : stage.level}
+                  </div>
+
+                  {/* Text Description Copy Content Blocks */}
+                  <div>
+                    <h4 style={{ 
+                      margin: '0 0 4px 0', 
+                      fontSize: '15px', 
+                      fontFamily: 'serif', 
+                      color: isPassed ? '#0f3c2b' : '#999',
+                      fontWeight: isCurrent ? 700 : 400
+                    }}>
+                      {stage.title} {isCurrent && <span style={{ fontSize: '10px', color: '#ab8e4e', backgroundColor: '#fcf8ee', padding: '2px 8px', marginLeft: '10px', fontFamily: 'sans-serif', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Current Station</span>}
+                    </h4>
+                    <p style={{ margin: 0, fontSize: '13px', color: isPassed ? '#555' : '#bbb', lineHeight: '1.4' }}>
+                      {stage.desc}
+                    </p>
+                  </div>
+
+                </div>
+              );
+            })}
+
+          </div>
+
+        </div>
+      )}
+
     </div>
   );
 }
