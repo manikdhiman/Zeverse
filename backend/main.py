@@ -1,91 +1,161 @@
-from fastapi import FastAPI, Depends, HTTPException, Query, status
+from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from typing import List, Optional
-import models
-import schemas
-import crud
-from database import engine, get_db
+from pydantic import BaseModel
+from datetime import datetime, timedelta
+import random
+import jwt
 
-# Initialize database tables
-models.Base.metadata.create_all(bind=engine)
+# 🚀 1. Define the core application instance FIRST
+app = FastAPI(title="Zeverse Luxury Jewelry API Portal")
 
-app = FastAPI(
-    title="Zeverse Jewelry API",
-    description="Backend API for the Zeverse e-commerce platform",
-    version="1.0.0"
-)
-
-# CORS middleware configuration
+# 🏛️ CORS Security Configurations (Allows port 3000 to talk to port 8000)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for dev/test simplicity
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# 🔐 SECURITY METRICS DEFINITIONS
+SECRET_KEY = "SUPER_SECRET_ZEVERSE_KEY_MATRIX_9982"
+ALGORITHM = "HS256"
+# 6 Months Session tracking math calculation (180 days * 24 hours * 60 minutes)
+ACCESS_TOKEN_EXPIRE_MINUTES = 180 * 24 * 60 
+
+
+# 📦 STATIC DATABASE REGISTRY (Temporary Mock Vault)
+JEWELRY_PRODUCTS = [
+    {
+        "id": "1",
+        "name": "Sunny Resin Daisy Drop Earrings",
+        "category": "earrings",
+        "price": 349,
+        "image": "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&q=80",
+        "material": "High-grade clear resin & 18k gold-plated brass base pins.",
+        "size": "Length: 4.5cm | Weight: 6g (Ultra Lightweight Scale)",
+        "care": "Waterproof, perfume-safe. Wipe dry with a microfiber cloth after wear."
+    },
+    {
+        "id": "2",
+        "name": "Terracotta Heritage Jhumkas",
+        "category": "earrings",
+        "price": 599,
+        "image": "https://images.unsplash.com/photo-1630019852942-f89202989a59?w=500&q=80",
+        "material": "Organic baked terracotta clay with micro-fine lacquer seal.",
+        "size": "Drop length: 6cm | Umbrella diameter: 2.5cm",
+        "care": "Avoid direct submersion in water. Delicate clay construction—handle gently."
+    },
+    {
+        "id": "3",
+        "name": "Baroque Statement Pearl Choker",
+        "category": "neckpieces",
+        "price": 1299,
+        "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&q=80",
+        "material": "Genuine irregular AAA baroque pearls on reinforced steel cord.",
+        "size": "Length: 36cm + 5cm premium extension tail chain.",
+        "care": "Keep safe from abrasive chemicals and cosmetics. Store in a padded velvet pouch."
+    },
+    {
+        "id": "4",
+        "name": "Serpent Scale Heavy Ring",
+        "category": "rings",
+        "price": 450,
+        "image": "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&q=80",
+        "material": "316L Surgical Stainless Steel matrix with thick PVD gold overlay.",
+        "size": "Adjustable split band design. Fits standard ring sizes 6 to 9.",
+        "care": "100% Sweatproof, showerproof, and completely non-tarnish guarantee."
+    }
+]
+
+# 📝 MEMORY ORDER LOG ENGINE
+ORDERS_DATABASE = {}
+
+
+# 👤 SCHEMAS MATRIX LAYER
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class CheckoutRequest(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
+    phone: str
+    address: str
+    city: str
+    postal_code: str
+    total_payable: int
+
+
+# -------------------------------------------------------------------
+# 🌐 ROUTES & ACTIONS PORTS
+# -------------------------------------------------------------------
+
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to Zeverse Jewelry API. Visit /docs for Swagger documentation."}
+async def server_root_check():
+    return {"status": "operational", "engine": "FastAPI V8000"}
 
-# --- PRODUCTS ENDPOINTS ---
-@app.get("/api/products", response_model=List[schemas.Product])
-def read_products(
-    category: Optional[str] = Query(None, description="Filter by category (e.g. Earrings, Rings, Neckpieces, etc.)"),
-    collection: Optional[str] = Query(None, description="Filter by collection (e.g. Everyday Luxe, Festive, Wedding, Beach Vacation)"),
-    min_price: Optional[float] = Query(None, description="Minimum price filter"),
-    max_price: Optional[float] = Query(None, description="Maximum price filter"),
-    search: Optional[str] = Query(None, description="Search products by title or description"),
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db)
-):
-    """Retrieve all products matching the query parameters."""
-    products = crud.get_products(
-        db, 
-        skip=skip, 
-        limit=limit, 
-        category=category, 
-        collection=collection, 
-        min_price=min_price, 
-        max_price=max_price, 
-        search=search
+
+# 🔑 PORT 1: ACCOUNT AUTHENTICATION PORTAL
+@app.post("/api/auth/login")
+async def login_endpoint(payload: LoginRequest):
+    # Customer Account Credentials Access Check
+    if payload.email == "customer@zeverse.com" and payload.password == "securepassword123":
+        # Fixed: Explicitly calculate expiry time
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        token_payload = {"sub": payload.email, "exp": expire}
+        encoded_jwt = jwt.encode(token_payload, SECRET_KEY, algorithm=ALGORITHM)
+        
+        return {
+            "access_token": encoded_jwt,
+            "token_type": "bearer",
+            "email": payload.email
+        }
+    
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="The email profile or secure password does not match our records."
     )
-    return products
 
-@app.get("/api/products/{product_id}", response_model=schemas.Product)
-def read_product(product_id: int, db: Session = Depends(get_db)):
-    """Retrieve a single product by ID."""
-    db_product = crud.get_product(db, product_id=product_id)
-    if db_product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return db_product
 
-# --- ORDER ENDPOINTS ---
-@app.post("/api/orders", response_model=schemas.Order, status_code=status.HTTP_201_CREATED)
-def place_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
-    """Submit a new purchase order."""
-    try:
-        db_order = crud.create_order(db=db, order=order)
-        return db_order
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to place order: {str(e)}")
+# 🛍️ PORT 2: GET ALL PRODUCTS DATA
+@app.get("/api/products")
+async def get_all_products():
+    return JEWELRY_PRODUCTS
 
-@app.get("/api/orders/{order_number}", response_model=schemas.Order)
-def track_order(order_number: str, db: Session = Depends(get_db)):
-    """Retrieve order details by order tracking number."""
-    db_order = crud.get_order_by_number(db, order_number=order_number)
-    if db_order is None:
-        raise HTTPException(status_code=404, detail="Order not found. Please verify your tracking ID.")
-    return db_order
 
-# --- CONTACT ENDPOINTS ---
-@app.post("/api/contact", response_model=schemas.ContactMessage, status_code=status.HTTP_201_CREATED)
-def submit_contact(message: schemas.ContactMessageCreate, db: Session = Depends(get_db)):
-    """Submit a contact query message."""
-    try:
-        db_message = crud.create_contact_message(db=db, message=message)
-        return db_message
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to submit message: {str(e)}")
+# 🔍 PORT 3: GET SPECIFIC PRODUCT DATA BY DYNAMIC ID
+@app.get("/api/products/{product_id}")
+async def get_single_product(product_id: str):
+    for item in JEWELRY_PRODUCTS:
+        if item["id"] == product_id:
+            return item
+    raise HTTPException(status_code=404, detail="Artisan statement design missing.")
+
+
+# 🛒 PORT 4: PLACE NEW CUSTOMER ORDER
+@app.post("/api/orders")
+async def create_new_order(payload: CheckoutRequest):
+    generated_id = f"ZV-{datetime.now().year}-{random.randint(10000, 99999)}"
+    
+    new_order_record = {
+        "order_number": generated_id,
+        "customer_name": f"{payload.first_name} {payload.last_name}",
+        "email": payload.email,
+        "total_payable": payload.total_payable,
+        "current_stage": 1,
+        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    
+    ORDERS_DATABASE[generated_id] = new_order_record
+    return new_order_record
+
+
+# 🚚 PORT 5: SCAN AND LOCATE LIVE RECORD IN TRANSIT
+@app.get("/api/orders/track/{order_number}")
+async def fetch_order_status(order_number: str):
+    lookup_code = order_number.strip()
+    if lookup_code in ORDERS_DATABASE:
+        return ORDERS_DATABASE[lookup_code]
+    raise HTTPException(status_code=404, detail="Tracking reference identity token missing.")

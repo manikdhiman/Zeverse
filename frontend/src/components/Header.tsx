@@ -1,184 +1,81 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import styles from './Header.module.css';
 
-export const Header: React.FC = () => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const { cartCount, setIsCartOpen } = useCart();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+export default function Header() {
+  const { user, logoutUser } = useAuth();
+  const { cart } = useCart();
 
-  // Monitor scroll for premium floating header style
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close mobile menu on page transitions
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
-    }
-  };
+  const totalCartItems = cart ? cart.reduce((total: number, item: any) => total + item.quantity, 0) : 0;
 
   return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
-      {/* Top Banner Ticker */}
-      <div className={styles.topBanner}>
-        <div className={styles.tickerText}>
-          ✦ GET FREE SHIPPING ON ORDERS ABOVE ₹999 ✦ HANDCRAFTED ANTI-TARNISH JEWELRY ✦ 10% OFF ON FIRST PURCHASE (CODE: ZEV10) ✦
-        </div>
+    <header style={{ backgroundColor: '#fff', borderBottom: '1px solid #f2f2f2', position: 'sticky', top: 0, zIndex: 1000, fontFamily: 'serif' }}>
+      {/* Premium Promotional Top Ribbon */}
+      <div style={{ backgroundColor: '#0f3c2b', color: '#dbb968', fontSize: '11px', textAlign: 'center', padding: '10px 20px', letterSpacing: '2px', fontWeight: 400, textTransform: 'uppercase' }}>
+        ✦ FREE SHIPPING ON LUXURY ORDERS ABOVE ₹999 ✦ ANTI-TARNISH GUARANTEE ✦
       </div>
 
-      {/* Main Navigation Bar */}
-      <div className={styles.mainNav}>
-        <div className={styles.navContainer}>
-          {/* Mobile Menu Toggle */}
-          <button className={styles.mobileToggle} onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
-            <span className={mobileMenuOpen ? styles.open : ''}></span>
-            <span className={mobileMenuOpen ? styles.open : ''}></span>
-            <span className={mobileMenuOpen ? styles.open : ''}></span>
-          </button>
-
-          {/* Left Menus (Desktop) */}
-          <nav className={styles.desktopNavLeft}>
-            <Link href="/" className={pathname === '/' ? styles.active : ''}>
-              Home
-            </Link>
-            
-            {/* Products Dropdown */}
-            <div className={styles.dropdown}>
-              <Link href="/shop" className={`${styles.dropdownTrigger} ${pathname.startsWith('/shop') ? styles.active : ''}`}>
-                Shop Jewelry ▾
-              </Link>
-              <div className={styles.dropdownMenu}>
-                <Link href="/shop">All Products</Link>
-                <Link href="/shop?category=Earrings">Earrings</Link>
-                <Link href="/shop?category=Neckpieces">Neckpieces</Link>
-                <Link href="/shop?category=Rings">Rings</Link>
-                <Link href="/shop?category=Cuffs%20%26%20Bracelets">Cuffs & Bracelets</Link>
-                <Link href="/shop?category=Brooches">Brooches</Link>
-              </div>
-            </div>
-
-            {/* Collections Dropdown */}
-            <div className={styles.dropdown}>
-              <span className={styles.dropdownTrigger}>Collections ▾</span>
-              <div className={styles.dropdownMenu}>
-                <Link href="/shop?collection=Everyday%20Luxe">Everyday Luxe</Link>
-                <Link href="/shop?collection=Festive">Festive Collection</Link>
-                <Link href="/shop?collection=Wedding">Wedding Special</Link>
-                <Link href="/shop?collection=Beach%20Vacation">Beach Vacation</Link>
-              </div>
-            </div>
-          </nav>
-
-          {/* Logo Center */}
-          <div className={styles.logoCenter}>
-            <Link href="/">
-              <h1>ZEVERSE</h1>
-            </Link>
-          </div>
-
-          {/* Right Action Items (Desktop) */}
-          <div className={styles.navRight}>
-            {/* Search Bar */}
-            <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
-              <input
-                type="text"
-                placeholder="Search jewelry..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
-              />
-              <button type="submit" className={styles.searchBtn} aria-label="Search">
-                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-              </button>
-            </form>
-
-            {/* Static pages link */}
-            <nav className={styles.desktopNavRight}>
-              <Link href="/track-order" className={pathname === '/track-order' ? styles.active : ''}>
-                Track Order
-              </Link>
-              <Link href="/about" className={pathname === '/about' ? styles.active : ''}>
-                Our Story
-              </Link>
-            </nav>
-
-            {/* Shopping Bag Button */}
-            <button className={styles.cartIconBtn} onClick={() => setIsCartOpen(true)} aria-label="Cart drawer">
-              <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <path d="M16 10a4 4 0 0 1-8 0"></path>
-              </svg>
-              {cartCount > 0 && <span className={styles.cartCountBadge}>{cartCount}</span>}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Drawer Navigation Menu */}
-      <div className={`${styles.mobileDrawer} ${mobileMenuOpen ? styles.mobileDrawerOpen : ''}`}>
-        <nav className={styles.mobileNav}>
-          <form onSubmit={handleSearchSubmit} className={styles.mobileSearchForm}>
-            <input
-              type="text"
-              placeholder="Search Zeverse..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button type="submit">Go</button>
-          </form>
-          
-          <Link href="/">Home</Link>
-          <hr />
-          
-          <span className={styles.mobileSectionTitle}>Shop By Product</span>
-          <Link href="/shop">- All Products</Link>
-          <div className="dropdown-menu">
-          <Link href="/shop/earrings">Earrings</Link>
-          <Link href="/shop/neckpieces">Neckpieces</Link>
-          <Link href="/shop/rings">Rings</Link>
-          </div>
-          <hr />
-
-          <span className={styles.mobileSectionTitle}>Shop By Collection</span>
-          <Link href="/shop?collection=Everyday%20Luxe">- Everyday Luxe</Link>
-          <Link href="/shop?collection=Festive">- Festive Collection</Link>
-          <Link href="/shop?collection=Wedding">- Wedding Special</Link>
-          <Link href="/shop?collection=Beach%20Vacation">- Beach Vacation</Link>
-          <hr />
-
-          <Link href="/track-order">Track Order</Link>
-          <Link href="/about">Our Story</Link>
-          <Link href="/contact">Contact Us</Link>
+      {/* Main Structural Navigation Bar */}
+      <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '25px 40px', display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' }}>
+        
+        {/* LEFT COLUMN: Main Navigation Links */}
+        <nav style={{ display: 'flex', gap: '25px', fontSize: '12px', fontWeight: 500, letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'sans-serif' }}>
+          <Link href="/shop" style={{ color: '#444', textDecoration: 'none' }}>Shop</Link>
+          <Link href="/track-order" style={{ color: '#444', textDecoration: 'none' }}>Track</Link>
+          <Link href="/about" style={{ color: '#444', textDecoration: 'none' }}>Our Story</Link>
         </nav>
+
+        {/* CENTER COLUMN: Perfectly Centered Editorial Branding Header */}
+        <div style={{ textAlign: 'center' }}>
+          <Link href="/" style={{ color: '#0f3c2b', textDecoration: 'none', fontSize: '2.6rem', letterSpacing: '8px', fontWeight: 700, display: 'block' }}>
+            ZEVERSE
+          </Link>
+          <span style={{ display: 'block', fontSize: '9px', letterSpacing: '4px', textTransform: 'uppercase', color: '#ab8e4e', marginTop: '4px', fontFamily: 'sans-serif', fontWeight: 500 }}>
+            Premium Statement Jewelry
+          </span>
+        </div>
+
+        {/* RIGHT COLUMN: Shopping Bag sitting right next to Login */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '30px', fontFamily: 'sans-serif', fontSize: '12px', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+          
+          {/* Shopping Bag Icon - Left of Login */}
+          <Link href="/cart" style={{ color: '#111', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
+            <span style={{ fontSize: '18px', fontWeight: 300 }}>👜</span>
+            <span style={{ fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', color: '#111', fontWeight: 500 }}>Bag</span>
+            {totalCartItems > 0 && (
+              <span style={{ backgroundColor: '#0f3c2b', color: '#fff', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', marginLeft: '-2px' }}>
+                {totalCartItems}
+              </span>
+            )}
+          </Link>
+
+          {/* Secure Identity Profile / Vault Action Portal */}
+          {user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <span style={{ color: '#0f3c2b', fontWeight: 600, textTransform: 'none', fontFamily: 'serif', fontSize: '14px' }}>
+                👑 {user.email.split('@')[0]}
+              </span>
+              <button 
+                onClick={logoutUser} 
+                style={{ background: 'none', border: '1px solid #0f3c2b', padding: '6px 14px', fontSize: '10px', letterSpacing: '1px', cursor: 'pointer', color: '#0f3c2b', textTransform: 'uppercase', fontWeight: 600 }}
+              >
+                Exit Vault
+              </button>
+            </div>
+          ) : (
+            <Link 
+              href="/login" 
+              style={{ color: '#111', textDecoration: 'none', fontWeight: 600, borderBottom: '1px solid #111', paddingBottom: '2px' }}
+            >
+              Login
+            </Link>
+          )}
+        </div>
+
       </div>
     </header>
   );
-};
-export default Header;
+}

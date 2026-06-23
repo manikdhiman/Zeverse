@@ -12,7 +12,6 @@ function ShopContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Sync with URL categories smoothly
   const urlCategory = searchParams.get('category') || 'all';
   const [selectedCategory, setSelectedCategory] = useState(urlCategory);
   const [maxPrice, setMaxPrice] = useState(3000);
@@ -38,7 +37,6 @@ function ShopContent() {
       });
   }, []);
 
-  // Update URL without a hard page reload when someone updates the sidebar category
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
     if (category === 'all') {
@@ -55,120 +53,105 @@ function ShopContent() {
     return matchesCategory && matchesPrice && matchesSearch;
   });
 
-  if (loading) return <div style={{ textAlign: 'center', padding: '100px 20px', color: '#0f3c2b', fontWeight: '600', letterSpacing: '1px' }}>LOADING COLLECTION VAULTS...</div>;
-  if (error) return <div style={{ textAlign: 'center', padding: '100px 20px', color: '#C53030' }}><h3>Backend Server Offline</h3><p>Make sure FastAPI is running on port 8000!</p></div>;
+  if (loading) return <div style={{ textAlign: 'center', padding: '150px 20px', color: '#0f3c2b', fontWeight: '600', letterSpacing: '1px' }}>LOADING COLLECTION VAULTS...</div>;
+  if (error) return <div style={{ textAlign: 'center', padding: '150px 20px', color: '#C53030' }}><h3>Backend Server Offline</h3><p>Make sure FastAPI is running on port 8000!</p></div>;
+
+  // Check if we are looking at a specific collection or everything
+  const isFilteredView = selectedCategory !== 'all';
 
   return (
-    <div style={{ maxWidth: '1340px', margin: '0 auto', padding: '40px 20px', fontFamily: 'sans-serif' }}>
+    <div style={{ width: '100%', maxWidth: '1600px', margin: '0 auto', padding: '60px 40px', fontFamily: 'sans-serif', boxSizing: 'border-box' }}>
       
-      {/* Title Header matching the luxury aesthetic */}
-      <div style={{ marginBottom: '40px', borderBottom: '1px solid #eaeaea', paddingBottom: '20px' }}>
-        <span style={{ fontSize: '11px', letterSpacing: '2px', color: 'gray', textTransform: 'uppercase' }}>Zeverse Curated Catalog</span>
-        <h1 style={{ color: '#0f3c2b', fontSize: '2.4rem', margin: '5px 0 0 0', fontWeight: 'normal', textTransform: 'capitalize' }}>
-          {selectedCategory === 'all' ? 'Shop All Collections' : `${selectedCategory}`}
-        </h1>
+      {/* 1. LUXURY HEADER HEADER BLOCK */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: '1px solid #111', paddingBottom: '20px', marginBottom: '50px' }}>
+        <div>
+          <span style={{ fontSize: '11px', letterSpacing: '3px', color: 'gray', textTransform: 'uppercase' }}>Zeverse Curated Series</span>
+          <h1 style={{ color: '#0f3c2b', fontSize: '3rem', fontFamily: 'serif', margin: '10px 0 0 0', fontWeight: 'normal', textTransform: 'capitalize' }}>
+            {selectedCategory === 'all' ? 'Shop All Collections' : selectedCategory}
+          </h1>
+        </div>
+
+        {/* Inline Slider Filter right on top to completely replace empty space */}
+        <div style={{ width: '320px', paddingBottom: '5px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px', fontWeight: '500', color: '#111' }}>
+            <span>Max Budget Threshold:</span>
+            <span>₹{maxPrice}</span>
+          </div>
+          <input 
+            type="range" min="300" max="3000" step="50" value={maxPrice} 
+            onChange={(e) => setMaxPrice(Number(e.target.value))} 
+            style={{ width: '100%', accentColor: '#0f3c2b', cursor: 'pointer' }} 
+          />
+        </div>
       </div>
       
+      {/* 2. FLEX CONTAINER CONFIGURATION */}
       <div style={{ display: 'flex', gap: '50px', alignItems: 'flex-start' }}>
         
-        {/* SIDEBAR FILTERS (Cleaned up, zero radio buttons) */}
-        <aside style={{ width: '240px', flexShrink: 0, position: 'sticky', top: '20px' }}>
-          
-          {/* Text Search Field */}
-          <div style={{ marginBottom: '35px' }}>
-            <h3 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '12px', color: '#0f3c2b', fontWeight: '600' }}>Search Design</h3>
-            <input 
-              type="text" 
-              placeholder="Type to search..." 
-              value={searchQuery} 
-              onChange={(e) => setSearchQuery(e.target.value)} 
-              style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '0px', boxSizing: 'border-box', outline: 'none', fontSize: '14px' }}
-            />
-          </div>
-          
-          {/* Interactive Navigation List */}
-          <div style={{ marginBottom: '35px' }}>
-            <h3 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px', color: '#0f3c2b', fontWeight: '600' }}>Categories</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {['all', 'earrings', 'neckpieces', 'rings', 'brooches'].map((cat) => {
-                const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
-                return (
+        {/* SIDEBAR BLOCK: Hidden completely if viewing a dedicated option category like Earrings */}
+        {!isFilteredView && (
+          <aside style={{ width: '240px', flexShrink: 0, position: 'sticky', top: '20px', backgroundColor: '#f9f9f9', padding: '25px 20px', borderRadius: '4px', border: '1px solid #eee' }}>
+            <div style={{ marginBottom: '30px' }}>
+              <h3 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '12px', color: '#0f3c2b', fontWeight: '600' }}>Search Design</h3>
+              <input 
+                type="text" placeholder="Type to filter..." value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                style={{ width: '100%', padding: '12px', border: '1px solid #ddd', outline: 'none', fontSize: '14px' }}
+              />
+            </div>
+            
+            <div>
+              <h3 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '15px', color: '#0f3c2b', fontWeight: '600' }}>Categories</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {['all', 'earrings', 'neckpieces', 'rings', 'brooches'].map((cat) => (
                   <button
-                    key={cat}
-                    onClick={() => handleCategoryClick(cat)}
+                    key={cat} onClick={() => handleCategoryClick(cat)}
                     style={{
-                      textAlign: 'left',
-                      background: 'none',
-                      border: 'none',
-                      padding: '10px 0',
-                      fontSize: '14px',
-                      textTransform: 'capitalize',
-                      cursor: 'pointer',
-                      color: isActive ? '#0f3c2b' : '#666',
-                      fontWeight: isActive ? '600' : 'normal',
-                      borderBottom: isActive ? '1px solid #0f3c2b' : '1px solid transparent',
-                      transition: 'all 0.2s ease',
-                      width: 'fit-content'
+                      textAlign: 'left', background: 'none', border: 'none', padding: '8px 0', fontSize: '14px',
+                      textTransform: 'capitalize', cursor: 'pointer', color: '#666', width: 'fit-content'
                     }}
                   >
-                    {cat === 'all' ? 'View All Items' : cat}
+                    {cat}
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          </div>
+          </aside>
+        )}
 
-          {/* Pricing Controls Slider */}
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <h3 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1.5px', color: '#0f3c2b', fontWeight: '600', margin: 0 }}>Max Price</h3>
-              <span style={{ fontSize: '14px', fontWeight: '600', color: '#0f3c2b' }}>₹{maxPrice}</span>
-            </div>
-            <input 
-              type="range" 
-              min="300" 
-              max="3000" 
-              step="50" 
-              value={maxPrice} 
-              onChange={(e) => setMaxPrice(Number(e.target.value))} 
-              style={{ width: '100%', accentColor: '#0f3c2b', cursor: 'pointer' }} 
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'gray', marginTop: '5px' }}>
-              <span>₹300</span>
-              <span>₹3,000</span>
-            </div>
-          </div>
-        </aside>
-
-        {/* PRODUCTS CATALOG DISPLAY GRID */}
+        {/* 3. CORE PRODUCT GRID SYSTEM */}
         <main style={{ flex: 1 }}>
           {filteredProducts.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 0', color: 'gray', fontSize: '15px' }}>
-              No statement pieces found matching your current filters.
+              No statement designs found matching this specific budget configuration.
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '40px 30px' }}>
+            /* Responsive layout: 3 across for all view, 4 across full-width if sidebar is hidden */
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: isFilteredView ? 'repeat(auto-fill, minmax(340px, 1fr))' : 'repeat(auto-fill, minmax(300px, 1fr))', 
+              gap: '60px 40px' 
+            }}>
               {filteredProducts.map((product) => (
                 <div key={product.id} style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#fff' }}>
                   
-                  {/* Image Frame */}
-                  <div style={{ width: '100%', height: '360px', overflow: 'hidden', backgroundColor: '#f9f9f9', marginBottom: '15px', position: 'relative' }}>
+                  {/* High Quality Large Product Picture Frame */}
+                  <div style={{ width: '100%', height: '460px', overflow: 'hidden', backgroundColor: '#f9f9f9', marginBottom: '20px' }}>
                     <img 
-                      src={product.image} 
-                      alt={product.name} 
+                      src={product.image} alt={product.name} 
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                     />
                   </div>
                   
-                  {/* Label Details */}
-                  <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                    <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'gray', letterSpacing: '1px', marginBottom: '4px' }}>{product.category}</span>
-                    <h4 style={{ margin: '0 0 6px 0', color: '#111', fontSize: '16px', fontWeight: '500', minHeight: '44px', lineHeight: '1.4' }}>{product.name}</h4>
-                    <p style={{ margin: '0 0 15px 0', fontWeight: '600', fontSize: '15px', color: '#111' }}>₹{product.price}</p>
+                  {/* Label Meta Descriptions */}
+                  <div style={{ padding: '0 5px', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                    <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'gray', letterSpacing: '1.5px', marginBottom: '6px' }}>{product.category}</span>
+                    <h4 style={{ margin: '0 0 8px 0', color: '#111', fontSize: '19px', fontWeight: '400', fontFamily: 'serif', minHeight: '52px', lineHeight: '1.3' }}>{product.name}</h4>
+                    <p style={{ margin: '0 0 20px 0', fontWeight: '600', fontSize: '16px', color: '#0f3c2b' }}>₹{product.price}</p>
                     
                     <Link 
                       href={`/shop/${product.id}`} 
-                      style={{ display: 'block', textAlign: 'center', backgroundColor: '#0f3c2b', color: '#fff', textDecoration: 'none', padding: '12px', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '500', marginTop: 'auto' }}
+                      style={{ display: 'block', textAlign: 'center', backgroundColor: '#0f3c2b', color: '#fff', textDecoration: 'none', padding: '14px', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '500', marginTop: 'auto' }}
                     >
                       Inspect Piece →
                     </Link>
@@ -187,7 +170,7 @@ function ShopContent() {
 
 export default function ShopPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: 'center', padding: '100px' }}>Syncing collection grids...</div>}>
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '120px' }}>Synchronizing vaults...</div>}>
       <ShopContent />
     </Suspense>
   );

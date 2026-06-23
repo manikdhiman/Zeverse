@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { CartProvider } from "../context/CartContext";
+import { AuthProvider } from "../context/AuthContext"; // 1. Imported the AuthProvider system
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,13 +29,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <CartProvider>
-          <Header />
-          <main style={{ minHeight: '80vh' }}>
-            {children}
-          </main>
-          <Footer />
-        </CartProvider>
+        {/* 2. Wrapped the AuthProvider right over your CartProvider */}
+        <AuthProvider>
+          <CartProvider>
+            <Header />
+            <main style={{ minHeight: '80vh' }}>
+              {children}
+            </main>
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
