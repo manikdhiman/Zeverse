@@ -17,7 +17,7 @@ export default function ProductInspectPage() {
   useEffect(() => {
     if (!id) return;
 
-    fetch(`http://127.0.0.1:8000/api/products/${id}`)
+    fetch(`https://zeverse-backend.onrender.com/api/products/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error('Statement piece registry details could not be parsed.');
