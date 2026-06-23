@@ -1,20 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #004225;        /* Forest Green */
-  --primary-rgb: 0, 66, 37;
-  --accent-color: #D4AF37;         /* Antique Gold */
-  --accent-rgb: 212, 175, 55;
-  --accent-dark: #B8952B;          /* Darker Gold */
-  --accent-light: #F9F5EA;         /* Gold Tint Background */
+  /* 💎 UPDATED BRAND PALETTE MATRIX TO NEW LUXURY EMERALD TEAL */
+  --primary-color: #0b2b26;         /* Royal Dark Emerald Teal */
+  --primary-rgb: 11, 43, 38;        /* RGB Mapping for alpha opacities */
   
-  --bg-light: #F9FAF9;             /* Ivory-white with green undertone */
+  --accent-color: #D4AF37;          /* Antique Gold */
+  --accent-rgb: 212, 175, 55;
+  --accent-dark: #B8952B;           /* Darker Gold */
+  --accent-light: #F9F5EA;          /* Gold Tint Background */
+  
+  --bg-light: #F9FAF9;              /* Ivory-white with green undertone */
   --bg-pure: #FFFFFF;
-  --text-dark: #112017;            /* Deep soft black/green */
-  --text-muted: #55675D;           /* Muted grey-green */
-  --border-color: #E2E8E4;         /* Soft border color */
-  --card-shadow: 0 8px 24px rgba(0, 66, 37, 0.04);
-  --card-shadow-hover: 0 16px 36px rgba(0, 66, 37, 0.09);
+  --text-dark: #0a1b18;             /* Deepest matching soft green-black */
+  --text-muted: #52635f;            /* Muted slate-teal */
+  --border-color: #E2E8E4;          /* Soft border color */
+  
+  /* Redesigned Shadow Configurations using new core depth values */
+  --card-shadow: 0 8px 24px rgba(11, 43, 38, 0.04);
+  --card-shadow-hover: 0 16px 36px rgba(11, 43, 38, 0.09);
   
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -68,7 +72,7 @@ button, input, select, textarea {
   background: var(--bg-light);
 }
 ::-webkit-scrollbar-thumb {
-  background: #00422540;
+  background: rgba(11, 43, 38, 0.15); /* Updated tracking hue opacity */
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -197,5 +201,5 @@ button, input, select, textarea {
 
 .input-field:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(0, 66, 37, 0.08);
+  box-shadow: 0 0 0 2px rgba(11, 43, 38, 0.08); /* Updated focus shadow ring */
 }

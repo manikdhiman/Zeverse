@@ -20,7 +20,6 @@ app.add_middleware(
 # 🔐 SECURITY METRICS DEFINITIONS
 SECRET_KEY = "SUPER_SECRET_ZEVERSE_KEY_MATRIX_9982"
 ALGORITHM = "HS256"
-# 6 Months Session tracking math calculation (180 days * 24 hours * 60 minutes)
 ACCESS_TOKEN_EXPIRE_MINUTES = 180 * 24 * 60 
 
 
@@ -65,6 +64,27 @@ JEWELRY_PRODUCTS = [
         "material": "316L Surgical Stainless Steel matrix with thick PVD gold overlay.",
         "size": "Adjustable split band design. Fits standard ring sizes 6 to 9.",
         "care": "100% Sweatproof, showerproof, and completely non-tarnish guarantee."
+    },
+    # ✦ ADDED NEW BROOCHES REGISTRIES PERFECTLY HERE
+    {
+        "id": "5",
+        "name": "Baroque Gilded Crest Brooch",
+        "category": "brooches",
+        "price": 899,
+        "image": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=500&q=80",
+        "material": "Aged brass base, 18k antique gold overlay, micro-set zircon stones.",
+        "size": "Dimensions: 5.5cm x 5.5cm | Safety lock pins.",
+        "care": "Store in a dry velvet casing. Avoid spraying premium perfumes directly onto metal plating."
+    },
+    {
+        "id": "6",
+        "name": "Midnight Orchid Enamel Pin",
+        "category": "brooches",
+        "price": 750,
+        "image": "https://images.unsplash.com/photo-1590548784585-645d2b604d6e?w=500&q=80",
+        "material": "Hand-painted liquid glass enamel, zinc alloy matrix, central freshwater pearl.",
+        "size": "Dimensions: 6.0cm x 4.2cm | Heavy fabric support pin.",
+        "care": "Scratch-resistant coating applied. Clean using only a damp soft cloth microfiber wipe."
     }
 ]
 
@@ -78,13 +98,12 @@ class LoginRequest(BaseModel):
     password: str
 
 class CheckoutRequest(BaseModel):
-    first_name: str
-    last_name: str
-    email: str
-    phone: str
-    address: str
+    fullName: str
+    phoneNumber: str
+    emailAddress: str
+    shippingAddress: str
     city: str
-    postal_code: str
+    postalCode: str
     total_payable: int
 
 
@@ -100,9 +119,8 @@ async def server_root_check():
 # 🔑 PORT 1: ACCOUNT AUTHENTICATION PORTAL
 @app.post("/api/auth/login")
 async def login_endpoint(payload: LoginRequest):
-    # Customer Account Credentials Access Check
+    # Standard Luxury testing user credentials
     if payload.email == "customer@zeverse.com" and payload.password == "securepassword123":
-        # Fixed: Explicitly calculate expiry time
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         token_payload = {"sub": payload.email, "exp": expire}
         encoded_jwt = jwt.encode(token_payload, SECRET_KEY, algorithm=ALGORITHM)
@@ -134,15 +152,15 @@ async def get_single_product(product_id: str):
     raise HTTPException(status_code=404, detail="Artisan statement design missing.")
 
 
-# 🛒 PORT 4: PLACE NEW CUSTOMER ORDER
-@app.post("/api/orders")
+# 🛒 PORT 4: PLACE NEW CUSTOMER ORDER (Updated endpoint match for frontend)
+@app.post("/api/orders/place")
 async def create_new_order(payload: CheckoutRequest):
-    generated_id = f"ZV-{datetime.now().year}-{random.randint(10000, 99999)}"
+    generated_id = f"ZV-2026-{random.randint(10000, 99999)}"
     
     new_order_record = {
         "order_number": generated_id,
-        "customer_name": f"{payload.first_name} {payload.last_name}",
-        "email": payload.email,
+        "customer_name": payload.fullName,
+        "email": payload.emailAddress,
         "total_payable": payload.total_payable,
         "current_stage": 1,
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
