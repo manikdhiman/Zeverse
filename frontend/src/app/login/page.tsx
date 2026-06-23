@@ -79,12 +79,12 @@ const response = await fetch('https://zeverse-backend.onrender.com/api/auth/logi
         </div>
 
         <div>
-          <p style={{ fontFamily: 'serif', fontSize: '14px', italic: 'true', color: '#dbb968', margin: '0 0 8px 0', letterSpacing: '1px' }}>
-            “Jewelry is not ordinary accessory; it is an extension of identity.”
-          </p>
-          <span style={{ fontFamily: 'sans-serif', fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>
-            — ZEVERSE EDITORIAL
-          </span>
+        <p style={{ fontFamily: 'serif', fontSize: '14px', fontStyle: 'italic', color: '#dbb968', margin: '0' }}>
+  “Jewelry is not ordinary accessory; it is an extension of identity.”
+</p>
+<p style={{ fontFamily: 'sans-serif', fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: '#ffffff', opacity: 0.6, marginTop: '10px' }}>
+  — Zeverse Editorial
+</p>
         </div>
       </div>
 
