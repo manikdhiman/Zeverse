@@ -1,35 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* 💎 UPDATED BRAND PALETTE MATRIX TO NEW LUXURY EMERALD TEAL */
-  --primary-color: #0b2b26;         /* Royal Dark Emerald Teal */
-  --primary-rgb: 11, 43, 38;        /* RGB Mapping for alpha opacities */
+  /* 👑 THE ULTRA ROYAL MAJESTIC PALETTE */
+  --primary-color: #061c19;         /* Even deeper, richer midnight emerald */
+  --primary-rgb: 6, 28, 25;
   
-  --accent-color: #D4AF37;          /* Antique Gold */
+  --accent-color: #d4af37;          /* Pure Metallic Antique Gold */
   --accent-rgb: 212, 175, 55;
-  --accent-dark: #B8952B;           /* Darker Gold */
-  --accent-light: #F9F5EA;          /* Gold Tint Background */
+  --accent-dark: #aa8416;           /* Burnished Gold for luxury text */
+  --accent-light: #fdfbf7;          /* Royal Ivory/Champagne soft background */
   
-  --bg-light: #F9FAF9;              /* Ivory-white with green undertone */
-  --bg-pure: #FFFFFF;
-  --text-dark: #0a1b18;             /* Deepest matching soft green-black */
-  --text-muted: #52635f;            /* Muted slate-teal */
-  --border-color: #E2E8E4;          /* Soft border color */
+  --bg-light: #f7f9f8;              
+  --bg-pure: #ffffff;
+  --text-dark: #051412;             
+  --text-muted: #5a6e6a;            
+  --border-color: #eadecc;          /* Soft gold-tinted border line */
   
-  /* Redesigned Shadow Configurations using new core depth values */
-  --card-shadow: 0 8px 24px rgba(11, 43, 38, 0.04);
-  --card-shadow-hover: 0 16px 36px rgba(11, 43, 38, 0.09);
+  --card-shadow: 0 10px 30px rgba(6, 28, 25, 0.03);
+  --card-shadow-hover: 0 20px 45px rgba(6, 28, 25, 0.07);
   
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   
-  --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --transition-fast: all 0.2s ease-out;
+  /* 🪄 SOBER ANIMATION TUNING ENGINE */
+  --transition-royal: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); /* Elegant slow ease-out */
+  --transition-fast: all 0.25s ease-out;
   
-  --max-width: 1200px;
+  --max-width: 1300px;
 }
 
-/* Base Styles */
+/* Base Layout Overrides */
 * {
   box-sizing: border-box;
   padding: 0;
@@ -41,165 +41,81 @@ html, body {
   width: 100%;
   overflow-x: hidden;
   color: var(--text-dark);
-  background: var(--bg-pure);
+  background: var(--accent-light); /* Changed background to soft regal champagne tint */
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: 0.03em;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: var(--transition-fast);
+/* ✨ ROYAL SOBER ANIMATION CLASSES */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: royalFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-button, input, select, textarea {
-  font-family: var(--font-sans);
-  outline: none;
+.luxury-hover-card {
+  transition: var(--transition-royal);
+}
+.luxury-hover-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.circle-window-img {
+  transition: var(--transition-royal);
+}
+.circle-window-img:hover {
+  transform: scale(1.08); /* Gentle premium zoom without shaking */
+}
+
+@keyframes royalFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-light);
+  background: var(--accent-light);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(11, 43, 38, 0.15); /* Updated tracking hue opacity */
-  border-radius: 4px;
+  background: var(--border-color);
+  border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-color);
+  background: var(--accent-dark);
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideInUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleUp {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
-}
-
-.slide-up {
-  animation: slideInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-}
-
-/* Form inputs & buttons elements */
+/* Buttons System */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   background-color: var(--primary-color);
-  color: var(--bg-pure);
+  color: var(--accent-color);
   border: 1px solid var(--primary-color);
-  padding: 12px 24px;
+  padding: 14px 32px;
   font-weight: 500;
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: var(--transition-smooth);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.btn-primary::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--accent-color);
-  transform: translateY(100%);
-  transition: var(--transition-smooth);
-  z-index: -1;
+  transition: var(--transition-royal);
 }
 
 .btn-primary:hover {
-  color: var(--text-dark);
-  border-color: var(--accent-color);
-}
-
-.btn-primary:hover::after {
-  transform: translateY(0);
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   background-color: transparent;
   color: var(--primary-color);
-  border: 1.5px solid var(--primary-color);
-  padding: 12px 24px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-}
-
-.btn-secondary:hover {
-  background-color: var(--primary-color);
-  color: var(--bg-pure);
-}
-
-.input-field {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--border-color);
-  border-radius: 0;
-  font-size: 0.95rem;
-  transition: var(--transition-fast);
-  background-color: var(--bg-pure);
-}
-
-.input-field:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(11, 43, 38, 0.08); /* Updated focus shadow ring */
 }
