@@ -1,56 +1,8 @@
 .main {
   width: 100%;
   min-height: 100vh;
-  position: relative;
 }
 
-/* PROMO STRIP IN PANTONE BOTANICAL TONE */
-.promoBar {
-  width: 100%;
-  background-color: #0b2217; /* Saturated matte botanical lock */
-  color: #ffffff;
-  text-align: center;
-  padding: 10px 10px;
-  font-size: 0.7rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  font-weight: 500;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100000;
-}
-
-/* 🧭 MASTER NAV COMPONENT BASE: Fixed position covering entire top architecture seamlessly */
-.masterNavbar {
-  position: fixed;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
-  z-index: 999999;
-}
-
-/* STATE A STYLE CONFIG: Transparent overlay mode sitting under promo bar */
-.masterNavbarInitial {
-  top: 40px;
-  padding: 25px max(50px, calc((100% - 1300px)/2));
-  background: transparent;
-}
-
-/* STATE B STYLE CONFIG: Smooth, elegant, drop-down white solid header matrix */
-.masterNavbarScrolled {
-  top: 0;
-  padding: 16px max(50px, calc((100% - 1300px)/2));
-  background: #ffffff;
-  box-shadow: 0 15px 40px rgba(18, 53, 36, 0.08);
-  border-bottom: 1px solid #e5dcc7;
-  transform: translateY(0);
-}
-
-/* 👑 BOTANICAL HERO CANVAS COVER FRAME */
 .hero {
   position: relative;
   width: 100%;
@@ -58,7 +10,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-image: linear-gradient(to right, rgba(8, 25, 20, 0.75) 30%, rgba(18, 53, 36, 0.45) 70%), 
+  /* Premium backdrop masking framework matching image_22886a.jpg */
+  background-image: linear-gradient(to right, rgba(8, 25, 20, 0.75) 35%, rgba(18, 53, 36, 0.45) 75%), 
                     url('https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1600&auto=format&fit=crop&q=80');
   background-position: center center;
   background-repeat: no-repeat;
@@ -71,7 +24,6 @@
   text-align: left;
   color: #ffffff;
   z-index: 10;
-  padding-top: 60px;
 }
 
 .heroSubtitle {
@@ -90,7 +42,6 @@
   line-height: 1.05;
   margin-bottom: 25px;
   font-family: var(--font-serif);
-  font-weight: 400;
   color: #ffffff;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.55);
 }
@@ -106,6 +57,6 @@
 
 .heroActions {
   display: flex;
-  gap: 25px;
+  gap: 30px;
   align-items: center;
 }

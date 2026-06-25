@@ -1,148 +1,152 @@
 .container {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 40px 24px 80px;
   width: 100%;
+  padding: 60px max(50px, calc((100% - 1200px) / 2)) 120px;
+  background-color: var(--accent-light) !important;
+  min-height: 100vh;
 }
 
 .title {
-  text-align: center;
-  font-size: 2.2rem;
+  font-size: 3.2rem;
   color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 12px;
+  letter-spacing: 3px;
 }
 
 .titleDivider {
-  width: 60px;
-  height: 3px;
-  background-color: var(--accent-color);
-  margin: 8px auto 40px;
+  background-color: #e5dcc7;
+  height: 1px;
+  width: 80px;
+  margin: 0 auto 60px;
 }
 
 .layout {
   display: flex;
   flex-direction: column;
-  gap: 80px;
+  gap: 100px;
+  width: 100%;
 }
 
-/* Intro Section */
+/* 🌿 LUXURIOUS TINT SHIELD BACKING ENGINE */
 .introSection {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 50px;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
   align-items: center;
+  width: 100%;
+}
+
+.introText {
+  /* Elegant contrast shield box - perfectly matched botanical green tint cushion */
+  background-color: rgba(18, 53, 36, 0.05); 
+  border-left: 3px solid var(--primary-color);
+  padding: 40px;
+  box-shadow: inset 0 0 20px rgba(18, 53, 36, 0.02);
 }
 
 .introText h3 {
-  font-size: 1.8rem;
+  font-size: 2.2rem;
+  line-height: 1.3;
   color: var(--primary-color);
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
 }
 
 .introText p {
-  font-size: 1.02rem;
-  line-height: 1.6;
-  color: var(--text-muted);
-  margin-bottom: 16px;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--primary-color);
+  margin-bottom: 24px;
+  opacity: 0.95;
+  text-align: justify;
+}
+
+.introText p:last-child {
+  margin-bottom: 0;
 }
 
 .introImageWrapper {
+  border: 1px solid #e5dcc7;
+  padding: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 15px 40px rgba(18, 53, 36, 0.04);
   width: 100%;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--card-shadow);
 }
 
 .introImage {
   width: 100%;
-  height: 100%;
+  height: auto;
+  display: block;
   object-fit: cover;
-  transition: var(--transition-smooth);
-}
-
-.introImageWrapper:hover .introImage {
-  transform: scale(1.03);
 }
 
 /* Process Section */
-.processSection h3 {
+.processSection {
   text-align: center;
-  font-size: 1.8rem;
+}
+
+.processSection h3 {
+  font-size: 2.2rem;
   color: var(--primary-color);
-  margin-bottom: 40px;
+  margin-bottom: 50px;
+  letter-spacing: 1px;
 }
 
 .processGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
 }
 
 .processCard {
-  background-color: var(--bg-light);
-  border: 1px solid var(--border-color);
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
-  transition: var(--transition-smooth);
+  background-color: #ffffff;
+  border: 1px solid #e5dcc7;
+  padding: 40px 30px;
+  text-align: left;
+  transition: var(--transition-royal);
 }
 
 .processCard:hover {
-  border-color: var(--primary-color);
-  transform: translateY(-4px);
-  box-shadow: var(--card-shadow);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(18, 53, 36, 0.06);
 }
 
 .stepNum {
-  font-family: var(--font-serif);
   font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent-color);
-  opacity: 0.8;
-  line-height: 1;
+  color: var(--accent-dark);
+  margin-bottom: 16px;
 }
 
 .processCard h4 {
-  font-size: 1.2rem;
-  color: var(--primary-color);
+  font-size: 1.1rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
 .processCard p {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-/* CTA Section */
-.ctaSection {
-  text-align: center;
-  background: linear-gradient(135deg, #002213 0%, #004225 100%);
-  color: var(--bg-pure);
-  padding: 60px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.ctaSection h3 {
-  font-size: 1.8rem;
-}
-
-.ctaSection p {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
   opacity: 0.85;
 }
 
-@media (max-width: 768px) {
-  .introSection {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  
-  .processGrid {
-    grid-template-columns: 1fr;
-  }
+/* Call-To-Action */
+.ctaSection {
+  background-color: #123524;
+  color: #ffffff;
+  text-align: center;
+  padding: 70px 40px;
+  border: 1px solid rgba(229, 220, 199, 0.2);
+}
+
+.ctaSection h3 {
+  font-size: 2.6rem;
+  color: #dfba6b;
+  margin-bottom: 16px;
+}
+
+.ctaSection p {
+  font-size: 1.1rem;
+  max-width: 500px;
+  margin: 0 auto 28px;
 }

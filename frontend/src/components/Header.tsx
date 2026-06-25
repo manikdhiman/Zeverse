@@ -1,81 +1,97 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useAuth } from '../context/AuthContext';
-import { useCart } from '../context/CartContext';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
-  const { user, logoutUser } = useAuth();
-  const { cart } = useCart();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
-  const totalCartItems = cart ? cart.reduce((total: number, item: any) => total + item.quantity, 0) : 0;
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 80) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const shouldBeTransparent = isHome && !isScrolled;
 
   return (
-    <header style={{ backgroundColor: '#fff', borderBottom: '1px solid #f2f2f2', position: 'sticky', top: 0, zIndex: 1000, fontFamily: 'serif' }}>
-      {/* Premium Promotional Top Ribbon */}
-      <div style={{ backgroundColor: '#0f3c2b', color: '#dbb968', fontSize: '11px', textAlign: 'center', padding: '10px 20px', letterSpacing: '2px', fontWeight: 400, textTransform: 'uppercase' }}>
-        ✦ FREE SHIPPING ON LUXURY ORDERS ABOVE ₹999 ✦ ANTI-TARNISH GUARANTEE ✦
+    <>
+      {/* Dynamic font face style booster for Didot Regular */}
+      <style jsx global>{`
+        @import url('https://fonts.cdnfonts.com/css/didot');
+        .didot-font {
+          font-family: 'Didot', 'Didot LT STD', 'GF_Didot', serif !important;
+        }
+      `}</style>
+
+      {/* COMPLIMENTARY SHIPPING BAR OVERHEAD */}
+      <div style={{
+        width: '100%',
+        backgroundColor: '#0b2217',
+        color: '#ffffff',
+        textAling: 'center',
+        padding: '10px 10px',
+        fontSize: '0.7rem',
+        letterSpacing: '3px',
+        textTransform: 'uppercase',
+        fontWeight: 500,
+        position: shouldBeTransparent ? 'absolute' : 'relative',
+        textAlign: 'center',
+        top: 0,
+        left: 0,
+        zIndex: 100000
+      }}>
+        COMPLIMENTARY SHIPPING ON ORDERS ABOVE ₹15,000
       </div>
 
-      {/* Main Structural Navigation Bar */}
-      <div style={{ maxWidth: '1440px', margin: '0 auto', padding: '25px 40px', display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' }}>
-        
-        {/* LEFT COLUMN: Main Navigation Links */}
-        <nav style={{ display: 'flex', gap: '25px', fontSize: '12px', fontWeight: 500, letterSpacing: '1.5px', textTransform: 'uppercase', fontFamily: 'sans-serif' }}>
-          <Link href="/shop" style={{ color: '#444', textDecoration: 'none' }}>Shop</Link>
-          <Link href="/track-order" style={{ color: '#444', textDecoration: 'none' }}>Track</Link>
-          <Link href="/about" style={{ color: '#444', textDecoration: 'none' }}>Our Story</Link>
-        </nav>
-
-        {/* CENTER COLUMN: Perfectly Centered Editorial Branding Header */}
-        <div style={{ textAlign: 'center' }}>
-          <Link href="/" style={{ color: '#0f3c2b', textDecoration: 'none', fontSize: '2.6rem', letterSpacing: '8px', fontWeight: 700, display: 'block' }}>
-            ZEVERSE
-          </Link>
-          <span style={{ display: 'block', fontSize: '9px', letterSpacing: '4px', textTransform: 'uppercase', color: '#ab8e4e', marginTop: '4px', fontFamily: 'sans-serif', fontWeight: 500 }}>
-            Premium Statement Jewelry
-          </span>
-        </div>
-
-        {/* RIGHT COLUMN: Shopping Bag sitting right next to Login */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '30px', fontFamily: 'sans-serif', fontSize: '12px', letterSpacing: '1.5px', textTransform: 'uppercase' }}>
+      {/* 🧭 NAV CONFIGURATION LAYER */}
+      <nav style={{
+        position: shouldBeTransparent ? 'absolute' : 'fixed',
+        top: shouldBeTransparent ? '40px' : '0',
+        left: 0,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: shouldBeTransparent ? '25px 50px' : '16px 50px',
+        backgroundColor: shouldBeTransparent ? 'transparent' : '#ffffff',
+        boxShadow: shouldBeTransparent ? 'none' : '0 15px 40px rgba(18, 53, 36, 0.08)',
+        borderBottom: shouldBeTransparent ? 'none' : '1px solid #e5dcc7',
+        transition: 'all 0.5s cubic-bezier(0.2, 1, 0.2, 1)',
+        zIndex: 999999
+      }}>
+        {/* Left Cluster Links */}
+        <div style={{ display: 'flex', gap: '35px', alignItems: 'center' }}>
+          <Link href="/shop" className="didot-font" style={{ textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '2.5px', color: shouldBeTransparent ? '#ffffff' : 'var(--primary-color)', fontWeight: 500, textShadow: shouldBeTransparent ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' }}>SHOP</Link>
+          <Link href="/track-order" className="didot-font" style={{ textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '2.5px', color: shouldBeTransparent ? '#ffffff' : 'var(--primary-color)', fontWeight: 500, textShadow: shouldBeTransparent ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' }}>TRACK</Link>
           
-          {/* Shopping Bag Icon - Left of Login */}
-          <Link href="/cart" style={{ color: '#111', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
-            <span style={{ fontSize: '18px', fontWeight: 300 }}>👜</span>
-            <span style={{ fontSize: '12px', letterSpacing: '1px', textTransform: 'uppercase', color: '#111', fontWeight: 500 }}>Bag</span>
-            {totalCartItems > 0 && (
-              <span style={{ backgroundColor: '#0f3c2b', color: '#fff', borderRadius: '50%', width: '16px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', marginLeft: '-2px' }}>
-                {totalCartItems}
-              </span>
-            )}
-          </Link>
-
-          {/* Secure Identity Profile / Vault Action Portal */}
-          {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              <span style={{ color: '#0f3c2b', fontWeight: 600, textTransform: 'none', fontFamily: 'serif', fontSize: '14px' }}>
-                👑 {user.email.split('@')[0]}
-              </span>
-              <button 
-                onClick={logoutUser} 
-                style={{ background: 'none', border: '1px solid #0f3c2b', padding: '6px 14px', fontSize: '10px', letterSpacing: '1px', cursor: 'pointer', color: '#0f3c2b', textTransform: 'uppercase', fontWeight: 600 }}
-              >
-                Exit Vault
-              </button>
-            </div>
-          ) : (
-            <Link 
-              href="/login" 
-              style={{ color: '#111', textDecoration: 'none', fontWeight: 600, borderBottom: '1px solid #111', paddingBottom: '2px' }}
-            >
-              Login
-            </Link>
-          )}
+          {/* ✅ FIXED ROUTE: Pointed straight to '/about' instead of '/story' to kill the 404 error */}
+          <Link href="/about" className="didot-font" style={{ textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '2.5px', color: shouldBeTransparent ? '#ffffff' : 'var(--primary-color)', fontWeight: 500, textShadow: shouldBeTransparent ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' }}>OUR STORY</Link>
         </div>
+        
+        {/* Center Title Logo */}
+        <Link href="/" style={{ textDecoration: 'none', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          <h1 className="didot-font" style={{ margin: 0, fontSize: shouldBeTransparent ? '2.5rem' : '2.1rem', color: shouldBeTransparent ? '#ffffff' : 'var(--primary-color)', letterSpacing: '6px', fontWeight: 'normal', transition: 'all 0.4s cubic-bezier(0.2, 1, 0.2, 1)', textShadow: shouldBeTransparent ? '0 2px 8px rgba(0,0,0,0.4)' : 'none' }}>Zeverse</h1>
+        </Link>
 
-      </div>
-    </header>
+        {/* Right Feature Set */}
+        <div className="didot-font" style={{ display: 'flex', gap: '30px', alignItems: 'center', fontSize: '0.85rem', color: shouldBeTransparent ? '#ffffff' : 'var(--primary-color)', fontWeight: 500, textShadow: shouldBeTransparent ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' }}>
+          <Link href="/shop" style={{ textDecoration: 'none', color: 'inherit' }}>SEARCH</Link>
+          <Link href="/login" style={{ textDecoration: 'none', color: shouldBeTransparent ? '#ffffff' : 'var(--accent-dark)' }}>👤 LOGIN</Link>
+          <Link href="/cart" style={{ textDecoration: 'none', color: 'inherit' }}>BAG (0)</Link>
+        </div>
+      </nav>
+      
+      {!shouldBeTransparent && <div style={{ height: '110px', width: '100%' }}></div>}
+    </>
   );
 }

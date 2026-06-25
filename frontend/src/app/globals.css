@@ -1,23 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/didot');
 
 :root {
-  /* 🌿 TRUE PANTONE 19-5220 TCX BOTANICAL GREEN VARIABLE MATRIX */
-  --primary-color: #123524;         
+  --primary-color: #123524;         /* Pantone 19-5220 Botanical Green */
   --accent-color: #dfba6b;          
   --accent-dark: #b89344;           
-  --accent-light: #fbfaf5;          
+  --accent-light: #fbfaf5;          /* Premium Champagne Off-White Cushion */
   --bg-pure: #ffffff;
-  --border-color: rgba(255, 255, 255, 0.15);
+  --border-color: #e5dcc7;          
   
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --transition-royal: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  --font-serif: 'Didot', 'Didot LT STD', 'Didot Regular', Georgia, serif;
+  --transition-royal: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  /* 👑 ABSOLUTE MASTER RESET: Force every single tag to use Didot */
+  font-family: var(--font-serif) !important; 
 }
 
 html, body {
@@ -25,48 +25,59 @@ html, body {
   padding: 0 !important;
   width: 100%;
   min-height: 100vh;
-  background: var(--accent-light);
-  color: var(--primary-color);
-  font-family: var(--font-sans);
+  background: var(--accent-light) !important;
+  color: var(--primary-color) !important;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* 👑 SHARP LUXURY BUTTON NODES */
+/* Clear unbolded luxury weights for headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal !important;
+  color: var(--primary-color);
+}
+
+p, span, a, div, button, input {
+  color: inherit;
+}
+
+/* 👑 CRISP ROYAL SOLID BUTTON STYLES FOR THE EDIT */
 .btn-luxury-solid {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #bfa37a; 
-  color: #123524;
-  padding: 16px 36px;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  transition: var(--transition-royal);
-  border: none;
+  background-color: #bfa37a !important; 
+  color: #123524 !important;
+  padding: 16px 36px !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  transition: var(--transition-royal) !important;
+  border: none !important;
 }
 
 .btn-luxury-solid:hover {
-  background-color: #123524;
-  color: #ffffff;
+  background-color: #123524 !important;
+  color: #ffffff !important;
 }
 
-.btn-luxury-text {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  color: #ffffff;
-  padding: 16px 20px;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  transition: var(--transition-royal);
+/* Elegant Underlined Luxury Text Link for Story */
+.btn-luxury-text-link {
+  color: #ffffff !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid #ffffff !important;
+  padding-bottom: 6px !important;
+  transition: var(--transition-royal) !important;
+}
+
+.btn-luxury-text-link:hover {
+  color: #bfa37a !important;
+  border-color: #bfa37a !important;
 }
