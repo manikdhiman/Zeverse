@@ -8,15 +8,16 @@ import styles from './page.module.css';
 export default function Home() {
   const [bestsellers, setBestsellers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [showStickyNav, setShowStickyNav] = useState(false);
 
-  // 🧭 TRIGGER SCROLL DETECTION INTERFACE
+  // 🧭 REGISTER HIGH-FIDELITY SCROLL MONITOR FOR INTERACTIVE HEADER DROP
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 80) {
-        setIsScrolled(true);
+      // Invisible at absolute start grid, drops fluidly right after 150px layout boundary context
+      if (window.scrollY > 150) {
+        setShowStickyNav(true);
       } else {
-        setIsScrolled(false);
+        setShowStickyNav(false);
       }
     };
 
@@ -24,6 +25,7 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // FETCH CORE BOUTIQUE PRODUCTS WITH LIVE RECOVERY MOCKS
   useEffect(() => {
     const API_ENDPOINT = 'https://zeverse-backend.onrender.com/api/products';
     fetch(API_ENDPOINT)
@@ -37,7 +39,7 @@ export default function Home() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fallback context active:', err);
+        console.error('Local environment development matrix fallback triggered:', err);
         const mockFallback = [
           {
             id: 1,
@@ -66,61 +68,58 @@ export default function Home() {
   return (
     <div className={styles.main}>
       
-      {/* 🧭 PREMIUM INLINE INJECTED DYNAMIC NAVBAR OVERLAY */}
-      <nav className={isScrolled ? styles.navContainerScrolled : styles.navContainer}>
-        <div style={{ display: 'flex', gap: '30px' }}>
-          <Link href="/shop" style={{ textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '2px', uppercase: 'true', color: isScrolled ? 'var(--primary-color)' : '#ffffff', fontWeight: 500 }}>SHOP</Link>
-          <Link href="/track" style={{ textDecoration: 'none', fontSize: '0.85rem', letterSpacing: '2px', uppercase: 'true', color: isScrolled ? 'var(--primary-color)' : '#ffffff', fontWeight: 500 }}>TRACK</Link>
-        </div>
-        
-        <Link href="/" style={{ textDecoration: 'none', textAlign: 'center' }}>
-          <h1 style={{ margin: 0, fontSize: '1.8rem', color: isScrolled ? 'var(--primary-color)' : 'var(--accent-color)', letterSpacing: '4px', transition: 'color 0.3s' }}>ZEVERSE</h1>
-          <span style={{ display: 'block', fontSize: '7px', letterSpacing: '3px', color: isScrolled ? 'var(--accent-dark)' : 'rgba(255,255,255,0.7)' }}>PREMIUM STATEMENT JEWELRY</span>
-        </Link>
+      {/* 🧭 PREMIUM REVEALING NAV: Fully Open Guest Routes (Hidden at start, slides down gracefully) */}
+      {showStickyNav && (
+        <nav className={styles.navContainerScrolled}>
+          <div style={{ display: 'flex', gap: '35px', alignItems: 'center' }}>
+            <Link href="/shop" style={{ textDecoration: 'none', fontSize: '0.8rem', letterSpacing: '2px', color: 'var(--primary-color)', fontWeight: 600, textTransform: 'uppercase' }}>SHOP</Link>
+            <Link href="/track" style={{ textDecoration: 'none', fontSize: '0.8rem', letterSpacing: '2px', color: 'var(--primary-color)', fontWeight: 600, textTransform: 'uppercase' }}>TRACK</Link>
+            <Link href="/story" style={{ textDecoration: 'none', fontSize: '0.8rem', letterSpacing: '2px', color: 'var(--primary-color)', fontWeight: 600, textTransform: 'uppercase' }}>OUR STORY</Link>
+          </div>
+          
+          <Link href="/" style={{ textDecoration: 'none', textAlign: 'center' }}>
+            <h1 style={{ margin: 0, fontSize: '1.9rem', color: 'var(--primary-color)', letterSpacing: '5px', fontWeight: 600 }}>ZEVERSE</h1>
+            <span style={{ display: 'block', fontSize: '7px', letterSpacing: '4px', color: 'var(--accent-dark)', marginTop: '2px' }}>PREMIUM STATEMENT JEWELRY</span>
+          </Link>
 
-        <div style={{ display: 'flex', gap: '25px', alignItems: 'center', fontSize: '0.85rem', color: isScrolled ? 'var(--primary-color)' : '#ffffff' }}>
-          <span style={{ letterSpacing: '1px' }}>👜 BAG (0)</span>
-          <span style={{ color: 'var(--accent-dark)', fontWeight: 600 }}>👑 CUSTOMER</span>
-        </div>
-      </nav>
+          <div style={{ display: 'flex', gap: '30px', alignItems: 'center', fontSize: '0.8rem', fontWeight: 600, color: 'var(--primary-color)' }}>
+            <span style={{ cursor: 'pointer', letterSpacing: '1px' }}>👜 BAG (0)</span>
+            {/* Guest navigation remains 100% open, access route profiles optionally */}
+            <Link href="/login" style={{ textDecoration: 'none', color: 'var(--accent-dark)', letterSpacing: '1px' }}>👤 LOGIN</Link>
+            <Link href="/shop" style={{ textDecoration: 'none', color: 'var(--primary-color)', border: '1px solid var(--primary-color)', padding: '6px 14px', fontSize: '0.75rem', letterSpacing: '1px' }}>EXPLORE VAULT</Link>
+          </div>
+        </nav>
+      )}
 
-      {/* 1. HERO SECTION (MOVABLE PARALLAX ACCELERATION) */}
+      {/* 1. HERO BLOCK LAYER (Edge-To-Edge Fullscreen Picture Canvas Window) */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <span className={styles.heroSubtitle} style={{ color: 'var(--accent-color)', fontWeight: 500 }}>
-            ✧ THE ARCHIVAL REGAL COLLECTION ✧
-          </span>
-          <h2 className={styles.heroTitle} style={{ fontFamily: 'var(--font-serif)', fontWeight: 400, color: '#ffffff' }}>
-            A Little Extra Sparkle,<br />For Everyday Moments.
-          </h2>
-          <p className={styles.heroText} style={{ color: '#ffffff', opacity: 0.9 }}>
+          <span className={styles.heroSubtitle}>✧ THE ARCHIVAL REGAL COLLECTION ✧</span>
+          <h2 className={styles.heroTitle}>A Little Extra Sparkle,<br />For Everyday Moments.</h2>
+          <p className={styles.heroText}>
             Hand-poured resin, sculpted clay, and anti-tarnish premium metals. Crafted mindfully for the bold, the bohemian, and the beautiful.
           </p>
           <div className={styles.heroActions}>
-            <Link href="/shop" className="btn-primary" style={{ backgroundColor: 'var(--accent-color)', color: 'var(--primary-color)', borderColor: 'var(--accent-color)' }}>
-              Explore Vault
-            </Link>
-            <Link href="/shop?collection=Everyday%20Luxe" className="btn-secondary" style={{ borderColor: '#ffffff', color: '#ffffff' }}>
-              Everyday Luxe
-            </Link>
+            <Link href="/shop" className="btn-primary">Explore Vault</Link>
+            <Link href="/shop?collection=Everyday%20Luxe" className="btn-primary" style={{ backgroundColor: 'transparent', color: '#ffffff', borderColor: '#ffffff' }}>Everyday Luxe</Link>
           </div>
         </div>
       </section>
 
-      {/* 2. CATEGORY SYSTEM */}
-      <section style={{ padding: '80px max(20px, calc((100% - 1200px)/2))', backgroundColor: 'var(--accent-light)' }}>
-        <div style={{ marginBottom: '50px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '2.5rem', color: 'var(--primary-color)' }}>Shop By Category</h2>
-          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--accent-dark)', marginTop: '5px' }}>
+      {/* 2. CATEGORY SYSTEM - CLASSIC BOUTIQUE PORTRAIT RECTANGLES WITHOUT CORNER HOVERS */}
+      <section style={{ padding: '120px max(20px, calc((100% - 1200px)/2))', backgroundColor: 'var(--accent-light)' }}>
+        <div style={{ marginBottom: '60px', textAlign: 'center' }}>
+          <h2 style={{ fontSize: '2.5rem', color: 'var(--primary-color)', letterSpacing: '2px' }}>Shop By Category</h2>
+          <p style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--accent-dark)', marginTop: '8px', fontSize: '1.1rem' }}>
             Curated shapes engineered for sophisticated silhouettes
           </p>
-          <div style={{ backgroundColor: 'var(--border-color)', height: '1px', width: '80px', margin: '15px auto 0' }}></div>
+          <div style={{ backgroundColor: 'var(--border-color)', height: '1px', width: '80px', margin: '20px auto 0' }}></div>
         </div>
 
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', 
-          gap: '30px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
+          gap: '24px',
           width: '100%'
         }}>
           {[
@@ -134,33 +133,31 @@ export default function Home() {
             <Link href={cat.query} key={idx} className="luxury-hover-card" style={{ 
               display: 'flex', 
               flexDirection: 'column', 
-              alignItems: 'center', 
-              textDecoration: 'none',
-              padding: '15px',
               backgroundColor: 'var(--bg-pure)',
               border: '1px solid var(--border-color)',
-              borderRadius: '8px'
+              padding: '12px',
+              borderRadius: '0px'
             }}>
-              <div style={{ width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--border-color)', marginBottom: '15px' }}>
-                <img src={cat.img} alt={cat.name} className="circle-window-img" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ width: '100%', height: '240px', overflow: 'hidden', position: 'relative', marginBottom: '15px' }}>
+                <img src={cat.img} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'var(--transition-royal)' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} />
               </div>
-              <h4 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem', fontWeight: 500, color: 'var(--primary-color)', letterSpacing: '1px', textTransform: 'uppercase' }}>{cat.name}</h4>
+              <h4 style={{ fontFamily: 'var(--font-sans)', fontSize: '0.8rem', fontWeight: 600, color: 'var(--primary-color)', letterSpacing: '1.5px', textTransform: 'uppercase', textAlign: 'center', marginTop: '5px' }}>{cat.name}</h4>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* 3. BESTSELLERS */}
-      <section style={{ backgroundColor: 'var(--accent-light)', paddingBottom: '60px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '2.5rem', color: 'var(--primary-color)' }}>The Fan Favorites</h2>
-          <div style={{ backgroundColor: 'var(--border-color)', height: '1px', width: '80px', margin: '15px auto' }}></div>
+      {/* 3. FAN FAVORITES/BESTSELLERS MATRIX RE-ANCHORED */}
+      <section style={{ padding: '0 max(20px, calc((100% - 1200px)/2)) 100px', backgroundColor: 'var(--accent-light)' }}>
+        <div style={{ textAlign: 'center', marginBottom: '50px' }}>
+          <h2 style={{ fontSize: '2.5rem', color: 'var(--primary-color)', letterSpacing: '2px' }}>The Fan Favorites</h2>
+          <div style={{ backgroundColor: 'var(--border-color)', height: '1px', width: '80px', margin: '20px auto' }}></div>
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center' }}>Loading luxury collection...</div>
+          <div style={{ textAlign: 'center', fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>Loading archival pieces...</div>
         ) : (
-          <div className={styles.productGrid}>
+          <div className={styles.productGrid} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '30px' }}>
             {bestsellers.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

@@ -1,35 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* 👑 THE ULTRA ROYAL MAJESTIC PALETTE */
-  --primary-color: #061c19;         /* Even deeper, richer midnight emerald */
-  --primary-rgb: 6, 28, 25;
-  
-  --accent-color: #d4af37;          /* Pure Metallic Antique Gold */
-  --accent-rgb: 212, 175, 55;
-  --accent-dark: #aa8416;           /* Burnished Gold for luxury text */
-  --accent-light: #fdfbf7;          /* Royal Ivory/Champagne soft background */
-  
-  --bg-light: #f7f9f8;              
+  /* 🌿 PANTONE 19-5220 TCX BOTANICAL GREEN THEME CORE */
+  --primary-color: #123524;         
+  --accent-color: #dfba6b;          
+  --accent-dark: #b89344;           
+  --accent-light: #fbfaf5;          
   --bg-pure: #ffffff;
-  --text-dark: #051412;             
-  --text-muted: #5a6e6a;            
-  --border-color: #eadecc;          /* Soft gold-tinted border line */
-  
-  --card-shadow: 0 10px 30px rgba(6, 28, 25, 0.03);
-  --card-shadow-hover: 0 20px 45px rgba(6, 28, 25, 0.07);
+  --border-color: #e5dcc7;          
   
   --font-serif: 'Cormorant Garamond', Georgia, serif;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  
-  /* 🪄 SOBER ANIMATION TUNING ENGINE */
-  --transition-royal: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); /* Elegant slow ease-out */
-  --transition-fast: all 0.25s ease-out;
-  
-  --max-width: 1300px;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --transition-royal: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Base Layout Overrides */
 * {
   box-sizing: border-box;
   padding: 0;
@@ -37,85 +21,47 @@
 }
 
 html, body {
-  min-height: 100vh;
+  margin: 0 !important;
+  padding: 0 !important;
   width: 100%;
-  overflow-x: hidden;
-  color: var(--text-dark);
-  background: var(--accent-light); /* Changed background to soft regal champagne tint */
+  min-height: 100vh;
+  background: var(--accent-light);
+  color: var(--primary-color);
   font-family: var(--font-sans);
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  letter-spacing: 0.03em;
-}
-
-/* ✨ ROYAL SOBER ANIMATION CLASSES */
-.reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: royalFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.luxury-hover-card {
-  transition: var(--transition-royal);
-}
-.luxury-hover-card:hover {
-  transform: translateY(-8px) scale(1.01);
-  box-shadow: var(--card-shadow-hover);
-}
-
-.circle-window-img {
-  transition: var(--transition-royal);
-}
-.circle-window-img:hover {
-  transform: scale(1.08); /* Gentle premium zoom without shaking */
-}
-
-@keyframes royalFadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--accent-light);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-dark);
-}
-
-/* Buttons System */
+/* 👑 CRISP RECTANGLE BOUTIQUE BUTTONS */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  background-color: var(--primary-color);
-  color: var(--accent-color);
-  border: 1px solid var(--primary-color);
-  padding: 14px 32px;
-  font-weight: 500;
-  font-size: 0.85rem;
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+  border: 1px solid var(--accent-color);
+  padding: 15px 36px;
+  font-size: 0.8rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
+  font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
   transition: var(--transition-royal);
+  border-radius: 0px !important; /* Fixed crisp luxury sharp corner */
 }
 
 .btn-primary:hover {
   background-color: transparent;
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.luxury-hover-card {
+  transition: var(--transition-royal);
+  text-decoration: none;
+}
+.luxury-hover-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(18, 53, 36, 0.07);
 }
