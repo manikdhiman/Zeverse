@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* 🌿 PANTONE 19-5220 TCX BOTANICAL GREEN THEME CORE */
+  /* 🌿 TRUE PANTONE 19-5220 TCX BOTANICAL GREEN VARIABLE MATRIX */
   --primary-color: #123524;         
   --accent-color: #dfba6b;          
   --accent-dark: #b89344;           
   --accent-light: #fbfaf5;          
   --bg-pure: #ffffff;
-  --border-color: #e5dcc7;          
+  --border-color: rgba(255, 255, 255, 0.15);
   
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Inter', system-ui, sans-serif;
-  --transition-royal: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-royal: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -32,36 +32,41 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* 👑 CRISP RECTANGLE BOUTIQUE BUTTONS */
-.btn-primary {
+/* 👑 SHARP LUXURY BUTTON NODES */
+.btn-luxury-solid {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--accent-color);
-  color: var(--primary-color);
-  border: 1px solid var(--accent-color);
-  padding: 15px 36px;
-  font-size: 0.8rem;
-  letter-spacing: 0.15em;
+  background-color: #bfa37a; 
+  color: #123524;
+  padding: 16px 36px;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   transition: var(--transition-royal);
-  border-radius: 0px !important; /* Fixed crisp luxury sharp corner */
+  border: none;
 }
 
-.btn-primary:hover {
-  background-color: transparent;
+.btn-luxury-solid:hover {
+  background-color: #123524;
   color: #ffffff;
-  border-color: #ffffff;
 }
 
-.luxury-hover-card {
-  transition: var(--transition-royal);
+.btn-luxury-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #ffffff;
+  padding: 16px 20px;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
   text-decoration: none;
-}
-.luxury-hover-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(18, 53, 36, 0.07);
+  transition: var(--transition-royal);
 }
