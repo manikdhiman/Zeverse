@@ -1,23 +1,25 @@
-@import url('https://fonts.cdnfonts.com/css/didot');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #123524;         /* Pantone 19-5220 Botanical Green */
-  --accent-color: #dfba6b;          
-  --accent-dark: #b89344;           
-  --accent-light: #fbfaf5;          /* Premium Champagne Off-White Cushion */
+  /* 🎨 MODERN TRI-COLOR LUXURY PALETTE MATRIX */
+  --primary-color: #0d3d3a;         /* Deep Forest Green */
+  --secondary-maroon: #6c171e;      /* Maroon / Burgundy Accent */
+  --accent-cream: #f4dabf;          /* Warm Sand / Cream Cushion Base */
   --bg-pure: #ffffff;
-  --border-color: #e5dcc7;          
+  --border-color: rgba(13, 61, 58, 0.15);
   
-  --font-serif: 'Didot', 'Didot LT STD', 'Didot Regular', Georgia, serif;
-  --transition-royal: all 0.5s cubic-bezier(0.2, 1, 0.2, 1);
+  /* 👑 Clean Baskerville Cascade for Publishing House Typography Clarity */
+  --font-serif: 'Baskerville', 'Baskerville Old Face', 'Hoefler Text', Garamond, 'Times New Roman', serif;
+  --transition-royal: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  /* 👑 ABSOLUTE MASTER RESET: Force every single tag to use Didot */
+  /* Force universal Baskerville tracking on all standard nodes */
   font-family: var(--font-serif) !important; 
+  -webkit-font-smoothing: antialiased;
 }
 
 html, body {
@@ -25,59 +27,59 @@ html, body {
   padding: 0 !important;
   width: 100%;
   min-height: 100vh;
-  background: var(--accent-light) !important;
+  background: var(--accent-cream) !important;
   color: var(--primary-color) !important;
   overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
 }
 
-/* Clear unbolded luxury weights for headings */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif) !important;
   font-weight: normal !important;
   color: var(--primary-color);
 }
 
-p, span, a, div, button, input {
-  color: inherit;
+p, span, a, div, button, input, label {
+  font-family: var(--font-serif) !important;
 }
 
-/* 👑 CRISP ROYAL SOLID BUTTON STYLES FOR THE EDIT */
+/* 👑 MODERN HIGH-CONTRAST SOLID CLASSIC BUTTON */
 .btn-luxury-solid {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #bfa37a !important; 
-  color: #123524 !important;
-  padding: 16px 36px !important;
-  font-size: 0.75rem !important;
+  background-color: var(--primary-color) !important;
+  color: var(--accent-cream) !important;
+  padding: 16px 38px !important;
+  font-size: 0.8rem !important;
   letter-spacing: 0.2em !important;
   text-transform: uppercase !important;
   font-weight: 600 !important;
   cursor: pointer !important;
   text-decoration: none !important;
   transition: var(--transition-royal) !important;
-  border: none !important;
+  border: 1px solid var(--primary-color) !important;
 }
 
 .btn-luxury-solid:hover {
-  background-color: #123524 !important;
+  background-color: var(--secondary-maroon) !important;
+  border-color: var(--secondary-maroon) !important;
   color: #ffffff !important;
 }
 
-/* Elegant Underlined Luxury Text Link for Story */
+/* Elegant Underlined Luxury Text Link for Hero */
 .btn-luxury-text-link {
   color: #ffffff !important;
-  font-size: 0.75rem !important;
+  font-size: 0.8rem !important;
   letter-spacing: 0.2em !important;
   text-transform: uppercase !important;
   font-weight: 600 !important;
   text-decoration: none !important;
-  border-bottom: 1px solid #ffffff !important;
+  border-bottom: 2px solid var(--accent-cream) !important;
   padding-bottom: 6px !important;
   transition: var(--transition-royal) !important;
 }
 
 .btn-luxury-text-link:hover {
-  color: #bfa37a !important;
-  border-color: #bfa37a !important;
+  color: var(--accent-cream) !important;
+  border-color: var(--secondary-maroon) !important;
 }
